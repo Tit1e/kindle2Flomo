@@ -12,24 +12,34 @@
           label-position="top"
         >
           <el-form-item label="Api">
-            <el-input v-model="options.api" type="password" show-password placeholder="API 采用本地存储"></el-input>
+            <el-input
+              v-model="options.api"
+              type="password"
+              show-password
+              placeholder="API 采用本地存储"
+            ></el-input>
           </el-form-item>
           <el-form-item label-width="0">
             <el-upload
+              id="fileSelect"
               drag
               :show-file-list="false"
               :multiple="false"
               action=""
               :auto-upload="false"
               accept=".html"
-              :on-change="fileChange"
             >
               <i class="el-icon-folder-add"></i>
               <div class="el-upload__text">
-                将 HTML 拖至此处，或<em> 选择文件</em>
+                <em> 选择 HTML 文件</em>
               </div>
             </el-upload>
-            <a class="how" href="https://mp.weixin.qq.com/s/CPIYoGItJVWJGk30MoVNXA" target="_blank">如何导出 HTML？</a>
+            <a
+              class="how"
+              href="https://mp.weixin.qq.com/s/CPIYoGItJVWJGk30MoVNXA"
+              target="_blank"
+              >如何导出 HTML？</a
+            >
           </el-form-item>
           <el-form-item label="书名">
             <el-input v-model="options.title"></el-input>
@@ -54,7 +64,8 @@
               <el-switch
                 v-model="options.tagPosition"
                 active-text="顶部"
-                inactive-text="底部">
+                inactive-text="底部"
+              >
               </el-switch>
             </el-form-item>
             <el-form-item label="tag 示例">
@@ -71,7 +82,8 @@
               v-model="options.reverse"
               active-text="倒序"
               inactive-text="顺序"
-              @change="reverseList">
+              @change="reverseList"
+            >
             </el-switch>
           </el-form-item>
         </el-form>
@@ -103,7 +115,11 @@
           </div>
           <i class="el-icon-info"></i>
         </el-tooltip>
-        <a class="thanks" href="https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg" target="_blank">
+        <a
+          class="thanks"
+          href="https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg"
+          target="_blank"
+        >
           感谢 LP 的授权
         </a>
       </div>
@@ -137,7 +153,7 @@ export default {
         title: '',
         split: '',
         tag: 'kindle',
-        api:'',
+        api: '',
         noTag: false,
         reverse: false,
         // false 底部，true 顶部
@@ -164,27 +180,34 @@ export default {
     disabledSend () {
       return !this.checkedMemo.length || !this.options.api
     },
-    loadingText(){
-      return `为减轻服务器压力，导入间隔为 1s。导入进度： ${this.index + 1}/${this.checkedMemo.length}`
+    loadingText () {
+      return `为减轻服务器压力，导入间隔为 1s。导入进度： ${this.index + 1}/${
+        this.checkedMemo.length
+      }`
     }
   },
   created () {
     this.setOptions()
   },
+  mounted () {
+    this.$nextTick(() => {
+      this.listenFile()
+    })
+  },
   methods: {
-    sendMemo(list, index){
+    sendMemo (list, index) {
       const data = {
         content: list[index].text
       }
       fly
         .post(this.options.api, data)
         .then(res => {
-          if(index < list.length - 1){
+          if (index < list.length - 1) {
             setTimeout(() => {
               this.index += 1
-              this.sendMemo(list,this.index)
+              this.sendMemo(list, this.index)
             }, 1000)
-          }else{
+          } else {
             this.$message.success('导入完毕')
             this.loading = false
           }
@@ -200,20 +223,16 @@ export default {
       this.index = 0
       this.sendMemo(this.checkedMemo, this.index)
     },
-    confirmCanEdit(){
+    confirmCanEdit () {
       const canEdit = localStorage.getItem('canEdit') || '0'
       if (canEdit === '0') {
-        this.$alert(
-          '双击 MEMO 可进入编辑模式',
-          '提示',
-          {
-            confirmButtonText: '知道了，不再提示',
-            callback: action => {
-              localStorage.setItem('canEdit', '1')
-              this.parse()
-            }
+        this.$alert('双击 MEMO 可进入编辑模式', '提示', {
+          confirmButtonText: '知道了，不再提示',
+          callback: action => {
+            localStorage.setItem('canEdit', '1')
+            this.parse()
           }
-        )
+        })
       }
     },
     confirmFirstParse () {
@@ -245,9 +264,9 @@ export default {
           } else {
             text = i.text
           }
-          if(this.options.tagPosition){
+          if (this.options.tagPosition) {
             text = `${this.tag}\r\n\r\n${text}`
-          }else{
+          } else {
             text = `${text}\r\n\r\n${this.tag}`
           }
           i.text = text
@@ -256,21 +275,28 @@ export default {
         this.confirmCanEdit()
       })
     },
-    reset(){
+    reset () {
       this.contentList = []
-      this.tmpList  = []
+      this.tmpList = []
     },
-    fileChange (file) {
-      this.reset()
-      const path = file.raw.path
-      const { title, texts } = readFile(path)
-      this.options.title = title
-      this.tmpList = texts
-      if (!texts.length) {
-        this.$message.warning('未发现有效内容')
-      }else{
-        this.parse()
-      }
+    listenFile () {
+      const that = this
+      document
+        .querySelector('#fileSelect input')
+        .addEventListener('change', function () {
+          const reader = new FileReader()
+          reader.onload = function fileReadCompleted () {
+            const { title, texts } = readFile(reader.result)
+            that.options.title = title
+            that.tmpList = texts
+            if (!texts.length) {
+              that.$message.warning('未发现有效内容')
+            } else {
+              that.parse()
+            }
+          }
+          reader.readAsText(this.files[0])
+        })
     },
     setOptions () {
       const options = JSON.parse(localStorage.getItem('options'))
@@ -291,7 +317,7 @@ export default {
       }
       localStorage.setItem('options', JSON.stringify(options))
     },
-    reverseList(){
+    reverseList () {
       this.contentList.reverse()
     }
   }
@@ -329,11 +355,11 @@ export default {
       flex-grow: 1;
       overflow: auto;
       box-sizing: border-box;
-      .how{
+      .how {
         color: inherit;
         font-size: 12px;
       }
-      .el-form-item--mini{
+      .el-form-item--mini {
         margin-bottom: 10px;
       }
       .el-upload-dragger {
@@ -383,10 +409,10 @@ export default {
       background-color: rgba($color: #ffffff, $alpha: 0.5);
       margin-bottom: 10px;
       font-weight: bold;
-    .thanks{
-      color: inherit;
-      padding-left: 10px;
-    }
+      .thanks {
+        color: inherit;
+        padding-left: 10px;
+      }
     }
   }
 }

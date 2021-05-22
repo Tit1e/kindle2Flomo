@@ -1,9 +1,7 @@
-const fs = require('fs')
 const cheerio  = require('cheerio')
-function readFile (filePath) {
-  //获取本地json文件的路径, __dirname 代表的是html页面的路径地址
-  let document = fs.readFileSync(filePath).toString()
-  const $ = cheerio.load(document)
+function readFile(text) {
+
+  const $ = cheerio.load(text)
   let titleNode = $('.bookTitle')[0]
   const title = $(titleNode).text().trim()
   const texts = []
