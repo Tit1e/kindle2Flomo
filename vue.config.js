@@ -1,7 +1,7 @@
 module.exports = {
+  publicPath: './',
   // 第三方插件配置
   pluginOptions: {
-    publicPath: './',
     electronBuilder: {
       nodeIntegration: true,
       builderOptions: {
