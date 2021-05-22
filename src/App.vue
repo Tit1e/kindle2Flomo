@@ -8,6 +8,7 @@
       @reverse="reverseList"
       @list-update="listUpdate"
       @update-tag="updateTag"
+      @reset="reset"
     />
     <div class="editor radio flex-v">
       <selected-text :selected="checkedMemo.length" :total="contentList.length" />
@@ -72,7 +73,7 @@ export default {
           if (index < list.length - 1) {
             setTimeout(() => {
               this.index += 1
-              this.sendMemo(list, this.index)
+              this.sendMemo(url, list, this.index)
             }, 1000)
           } else {
             this.$message.success('导入完毕')
@@ -144,6 +145,10 @@ export default {
     },
     reverseList () {
       this.contentList.reverse()
+    },
+    reset(){
+      this.contentList = []
+      this.tmpList = []
     }
   }
 }
@@ -184,6 +189,13 @@ html,
 body {
   height: 100%;
   margin: 0;
+  .el-select{
+    display: block;
+  }
+  .el-select-dropdown{
+    width: 173px!important;
+    overflow: hidden;
+  }
   .el-upload {
     width: 100%;
     .el-upload-dragger {

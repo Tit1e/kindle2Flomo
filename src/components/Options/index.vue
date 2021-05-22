@@ -26,11 +26,11 @@
             :multiple="false"
             action=""
             :auto-upload="false"
-            accept=".html"
+            accept=".html,.txt"
           >
             <i class="el-icon-folder-add"></i>
             <div class="el-upload__text">
-              <em> 选择 HTML 文件</em>
+              <em> 选择 HTML / TXT 文件</em>
             </div>
           </el-upload>
           <a
@@ -39,6 +39,17 @@
             target="_blank"
             >如何导出 HTML？</a
           >
+        </el-form-item>
+        <el-form-item label="选择书籍" v-if="bookList.length">
+          <el-select v-model="options.book" @change="selectChange">
+            <el-option
+              v-for="(item, index) in bookList"
+              :key="item.index"
+              :label="item.title"
+              :value="item.title"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="书名">
           <el-input v-model="options.title" clearable></el-input>
@@ -107,6 +118,7 @@
 
 <script>
 import readFile from '@/utils/readFile.js'
+import paresClip from '@/utils/paresClip.js'
 export default {
   name: 'Options',
   props: {
@@ -122,6 +134,7 @@ export default {
   data () {
     return {
       options: {
+        book: '',
         title: '',
         split: '',
         tag: 'kindle',
@@ -131,7 +144,8 @@ export default {
         // false 底部，true 顶部
         tagPosition: false
       },
-      tag: ''
+      tag: '',
+      bookList: []
     }
   },
   watch: {
@@ -160,6 +174,10 @@ export default {
     })
   },
   methods: {
+    selectChange (val) {
+      const data = this.bookList.find(i => i.title === val)
+      this.updateData(data)
+    },
     parse () {
       this.updateOptions()
       this.$emit('parse', this.options)
@@ -177,24 +195,49 @@ export default {
         ...options
       })
     },
+    reset(){
+      this.bookList = []
+      this.$emit('reset')
+    },
     listenFile () {
-      const that = this
       document
         .querySelector('#fileSelect input')
-        .addEventListener('change', function () {
-          const reader = new FileReader()
-          reader.onload = function fileReadCompleted () {
-            const { title, texts } = readFile(reader.result)
-            that.options.title = title
-            that.$emit('list-update', texts)
-            if (!texts.length) {
-              that.$message.warning('未发现有效内容')
-            } else {
-              that.parse()
+        .addEventListener('change', e => {
+          this.reset()
+          this.$nextTick(() => {
+            const file = e.target.files[0]
+            const ext = file.name
+              .split('.')
+              .pop()
+              .toLowerCase()
+            const reader = new FileReader()
+            reader.onload = () => {
+              if (ext === 'txt') {
+                this.bookList = paresClip(reader.result)
+                try {
+                  const data = this.bookList[0]
+                  this.options.book = data.title
+                  this.updateData(data)
+                } catch (error) {}
+              }
+              if (ext === 'html') {
+                const data = readFile(reader.result)
+                this.updateData(data)
+              }
             }
-          }
-          reader.readAsText(this.files[0])
+            reader.readAsText(file)
+          })
         })
+    },
+    updateData(data){
+      const {title, texts} = data
+      this.options.title = title
+      this.$emit('list-update', texts)
+      if (!texts.length) {
+        this.$message.warning('未发现有效内容')
+      } else {
+        this.parse()
+      }
     },
     updateOptions () {
       const { noTag, api, tag, split, tagPosition, reverse } = this.options
