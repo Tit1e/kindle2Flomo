@@ -1,6 +1,5 @@
 const cheerio  = require('cheerio')
 function readFile(text) {
-
   const $ = cheerio.load(text)
   let titleNode = $('.bookTitle')[0]
   const title = $(titleNode).text().trim()
