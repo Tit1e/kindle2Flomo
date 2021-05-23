@@ -1,20 +1,17 @@
-# kindletoflomo
+# Kindle2Flomo
 
-## Project setup
-```
-npm install
-```
+> 本软件已获得 lupeng 授权感谢 [lupeng](https://github.com/pengloo53/kindle2flomo) 的授权
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+将 Kindle 笔记一键导入至 flomo
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## 注册 [flomo](https://flomoapp.com/register2/?MTAzNDE)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-# kindle2Flomo
+### 在线访问地址：[Kindle2Flomo](https://tit1e.github.io/kindle2Flomo/)
+
+### Mac [应用下载](https://wwr.lanzoui.com/iIFx3pdxvvi)
+
+![](https://personal-1251959693.cos.ap-chengdu.myqcloud.com/2021-05-23-083506.png)
+
+![](https://personal-1251959693.cos.ap-chengdu.myqcloud.com/2021-05-23-Xnip2021-05-23_16-32-04.png)
+
+
