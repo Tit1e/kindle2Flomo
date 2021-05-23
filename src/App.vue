@@ -11,14 +11,34 @@
       @reset="reset"
     />
     <div class="editor radio flex-v">
-      <selected-text :selected="checkedMemo.length" :total="contentList.length" />
+      <selected-text
+        :selected="checkedMemo.length"
+        :total="contentList.length"
+      />
       <div>
-        <content-card
-          :input.sync="item.text"
-          :check.sync="item.checked"
-          v-for="(item, index) in contentList"
-          :info="item"
-        />
+        <draggable
+          v-model="contentList"
+          class="list-group"
+          tag="ul"
+          v-bind="dragOptions"
+          @start="drag = true"
+          @end="drag = false"
+        >
+          <transition-group
+            type="transition"
+            :name="!drag ? 'flip-list' : null"
+          >
+            <content-card
+              v-for="(item, index) in contentList"
+              :key="item.text"
+              class="list-group-item"
+              :input.sync="item.text"
+              :check.sync="item.checked"
+              :info="item"
+              :disabled="disabled"
+            />
+          </transition-group>
+        </draggable>
       </div>
     </div>
   </div>
@@ -29,12 +49,14 @@ import fly from 'flyio'
 import ContentCard from '@/components/ContentCard'
 import Options from '@/components/Options'
 import SelectedText from '@/components/SelectedText'
+import draggable from 'vuedraggable'
 export default {
   name: 'app',
   components: {
     ContentCard,
     Options,
-    SelectedText
+    SelectedText,
+    draggable
   },
   filters: {},
   data () {
@@ -43,10 +65,17 @@ export default {
       tmpList: [],
       index: 0,
       loading: false,
-      tag: ''
+      tag: '',
+      drag: false,
+      dragOptions: {
+        animation: 200,
+      }
     }
   },
   computed: {
+    disabled(){
+      return this.checkedMemo.length >= 100
+    },
     checkedMemo () {
       return this.contentList.filter(i => i.checked)
     },
@@ -146,7 +175,7 @@ export default {
     reverseList () {
       this.contentList.reverse()
     },
-    reset(){
+    reset () {
       this.contentList = []
       this.tmpList = []
     }
@@ -154,7 +183,10 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
+.flip-list-move {
+  transition: transform 0.5s;
+}
 @font-face {
   font-family: 'DIN-Regular';
   src: url('./assets/fonts/DINPro-Regular.otf') format('opentype');
@@ -177,69 +209,11 @@ export default {
     margin-left: 10px;
     flex-grow: 1;
     background: rgba(66, 185, 131, 0.2);
-  }
-}
-</style>
-<style lang="scss">
-* {
-  font-family: 'DIN-Regular', 'PingFang SC', Helvetica, Arial, sans-serif !important;
-  outline: none;
-}
-html,
-body {
-  height: 100%;
-  margin: 0;
-  .el-select{
-    display: block;
-  }
-  .el-select-dropdown{
-    width: 173px!important;
-    overflow: hidden;
-  }
-  .el-upload {
-    width: 100%;
-    .el-upload-dragger {
-      width: 100%;
+
+    .list-group {
+      margin: 0;
+      padding: 0;
     }
-  }
-  .el-tag {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  .text-right {
-    text-align: right;
-  }
-  .radio {
-    border-radius: 6px;
-  }
-  .flex {
-    display: flex;
-  }
-  .flex-v {
-    display: flex;
-    flex-direction: column;
-  }
-  .flex-1 {
-    flex-grow: 1;
-  }
-  .pd-10 {
-    padding: 10px;
-  }
-  .pt-10 {
-    padding-top: 10px;
-  }
-  .pl-10 {
-    padding-left: 10px;
-  }
-  .pr-10 {
-    padding-right: 10px;
-  }
-  .pb-10 {
-    padding-bottom: 10px;
   }
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
-  <div class="content-card">
+  <li class="content-card">
     <div class="checkbox">
-      <label class="label">
+      <label class="label" :class="disabled ? 'disabled' : ''">
         <i class="el-icon-success" :class="checked ? 'active' : ''"></i>
-        <el-checkbox v-model="checked"></el-checkbox>
+        <el-checkbox v-model="checked" :disabled="disabled"></el-checkbox>
       </label>
     </div>
     <div class="priview radio" @dblclick="isEdit = true">
@@ -15,7 +15,7 @@
       </template>
       <pre v-else>{{content}}</pre>
     </div>
-  </div>
+  </li>
 </template>
 
 <script>
@@ -25,6 +25,10 @@
       info: {
         type: Object,
         default: () => ({})
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     data(){
@@ -56,6 +60,7 @@
 
 <style lang="scss" scoped>
 .content-card{
+  cursor: move;
   margin-bottom: 20px;
   display: flex;
   align-items: center;

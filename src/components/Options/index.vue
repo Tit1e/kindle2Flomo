@@ -21,24 +21,38 @@
           <el-upload
             id="fileSelect"
             style="width: 100%"
-            drag
             :show-file-list="false"
             :multiple="false"
             action=""
             :auto-upload="false"
             accept=".html,.txt"
           >
+          <div class="upload-content radio flex pd-10">
             <i class="el-icon-folder-add"></i>
             <div class="el-upload__text">
-              <em> 选择 HTML / TXT 文件</em>
+              选择 HTML / TXT 文件
             </div>
+          </div>
           </el-upload>
-          <a
-            class="how"
-            href="https://mp.weixin.qq.com/s/CPIYoGItJVWJGk30MoVNXA"
-            target="_blank"
-            >如何导出 HTML？</a
-          >
+          <div class="how">
+            <i class="el-icon-question"></i>
+            <a
+              href="https://mp.weixin.qq.com/s/CPIYoGItJVWJGk30MoVNXA"
+              target="_blank"
+              >如何导出 HTML？</a
+            >
+            <el-tooltip effect="dark" placement="bottom">
+              <div slot="content">
+                <div class="pb-10">
+                  将 Kindle 通过数据线连接至电脑
+                </div>
+                <div>
+                  文件位于：Kindle根目录 - document - My Clippings.txt
+                </div>
+              </div>
+              <span>My Clippings.txt 在哪？</span>
+            </el-tooltip>
+          </div>
         </el-form-item>
         <el-form-item label="选择书籍" v-if="bookList.length">
           <el-select v-model="options.book" @change="selectChange">
@@ -290,16 +304,32 @@ export default {
     .how {
       color: inherit;
       font-size: 12px;
+      i{
+        margin-right: 4px;
+      }
+      a{
+        margin-right: 4px;
+        color: inherit;
+      }
     }
     .el-form-item--mini {
       margin-bottom: 10px;
     }
-    .el-upload-dragger {
-      .el-icon-folder-add {
-        font-size: 67px;
-        color: #c0c4cc;
-        margin: 40px 0 16px;
-        line-height: 50px;
+    #fileSelect{
+      box-sizing: border-box;
+      width: 100%;
+      .upload-content{
+        border: 1px dashed #c0c4cc;
+        font-size: 14px;
+        align-items: center;
+        justify-content: center;
+        &:hover{
+          border: 1px dashed #399375;
+        }
+        .el-icon-folder-add {
+          font-size: 1.4em;
+          margin-right: 10px;
+        }
       }
     }
   }
