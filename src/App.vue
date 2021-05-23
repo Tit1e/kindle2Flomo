@@ -21,6 +21,7 @@
           class="list-group"
           tag="ul"
           v-bind="dragOptions"
+          :disabled="dragDisabled"
           @start="drag = true"
           @end="drag = false"
         >
@@ -34,6 +35,7 @@
               class="list-group-item"
               :input.sync="item.text"
               :check.sync="item.checked"
+              :edit.sync="item.isEdit"
               :info="item"
               :disabled="disabled"
             />
@@ -73,6 +75,9 @@ export default {
     }
   },
   computed: {
+    dragDisabled(){
+      return !!this.contentList.filter(i => i.isEdit).length
+    },
     disabled(){
       return this.checkedMemo.length >= 100
     },
@@ -184,9 +189,6 @@ export default {
 </script>
 
 <style lang="scss" scope>
-.flip-list-move {
-  transition: transform 0.5s;
-}
 @font-face {
   font-family: 'DIN-Regular';
   src: url('./assets/fonts/DINPro-Regular.otf') format('opentype');

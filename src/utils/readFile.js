@@ -10,7 +10,8 @@ function readFile(text) {
     const text = element.children.filter(i => i.type ===  'text').map(i => i.data.trim()).join('')
     texts.push({
       text,
-      checked: false
+      checked: false,
+      isEdit: false
     })
   })
   return {

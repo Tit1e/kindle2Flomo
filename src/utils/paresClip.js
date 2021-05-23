@@ -106,7 +106,8 @@ function paresClip (paragraphs) {
     if (index !== -1) {
       result[index].texts.push({
         text: i.content,
-        checked: false
+        checked: false,
+        isEdit: false
       })
     } else {
       result.push({
@@ -114,7 +115,8 @@ function paresClip (paragraphs) {
         texts: [
           {
             text: i.content,
-            checked: false
+            checked: false,
+            isEdit: false
           }
         ]
       })

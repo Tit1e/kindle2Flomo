@@ -27,8 +27,8 @@
             <a href="https://album.animalcrossing.life" target="_blank">Tit1e's Photo Studio</a>
           </el-dropdown-item>
           <el-dropdown-item>
-            <a href="//personal-1251959693.cos.ap-chengdu.myqcloud.com/2021-05-23-IMG_8849.PNG" target="_blank">
-              <img src="//personal-1251959693.cos.ap-chengdu.myqcloud.com/2021-05-23-IMG_8849.PNG" width="200px" alt="即刻">
+            <a href="https://personal-1251959693.cos.ap-chengdu.myqcloud.com/2021-05-23-IMG_8849.PNG" target="_blank">
+              <img src="https://personal-1251959693.cos.ap-chengdu.myqcloud.com/2021-05-23-IMG_8849.PNG" width="200px" alt="即刻">
             </a>
           </el-dropdown-item>
         </el-dropdown-menu>
