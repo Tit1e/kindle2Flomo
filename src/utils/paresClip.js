@@ -120,7 +120,7 @@ function paresClip (paragraphs) {
       })
     }
   })
-  return result
+  return result.reverse()
 }
 
 function parse_block (texts) {
