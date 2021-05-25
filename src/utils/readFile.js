@@ -1,19 +1,33 @@
-const cheerio  = require('cheerio')
-function readFile(text) {
+const cheerio = require('cheerio')
+import { getType } from './paresClip'
+function readFile (text) {
   const $ = cheerio.load(text)
   let titleNode = $('.bookTitle')[0]
-  const title = $(titleNode).text().trim()
+  const title = $(titleNode)
+    .text()
+    .trim()
   const texts = []
-  const nodes = $('.noteText')
-  nodes.each((i, element) => {
-    // 过滤标注信息
-    const text = element.children.filter(i => i.type ===  'text').map(i => i.data.trim()).join('')
-    texts.push({
-      text,
-      checked: false,
-      isEdit: false
-    })
-  })
+  const nodes = Array.from($('.noteText'))
+  const tempNotes = []
+  while (nodes.length) {
+    const element = nodes.pop()
+    const type = getType(element.prev.prev.children[0].data)
+    const text = element.children
+      .filter(i => i.type === 'text')
+      .map(i => i.data.trim())
+      .join('')
+    if (type === 2) {
+      tempNotes.push(text)
+    }
+    if (type === 1) {
+      texts.unshift({
+        text,
+        note: tempNotes.pop() || '',
+        checked: false,
+        isEdit: false
+      })
+    }
+  }
   return {
     title,
     texts

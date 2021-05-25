@@ -14,8 +14,11 @@
       <selected-text
         :selected="checkedMemo.length"
         :total="contentList.length"
+        :import-count="importCount"
+        :disabled="disabled"
+        @change="checkAllChange"
       />
-      <div>
+      <div class="flex-1 overauto">
         <draggable
           v-model="contentList"
           class="list-group"
@@ -63,6 +66,7 @@ export default {
   filters: {},
   data () {
     return {
+      date: '',
       contentList: [],
       tmpList: [],
       index: 0,
@@ -70,15 +74,26 @@ export default {
       tag: '',
       drag: false,
       dragOptions: {
-        animation: 200,
-      }
+        animation: 200
+      },
+      importCount: 0
+    }
+  },
+  watch: {
+    importCount (val) {
+      localStorage.setItem(
+        'importCount',
+        JSON.stringify({
+          [this.date]: val
+        })
+      )
     }
   },
   computed: {
-    dragDisabled(){
+    dragDisabled () {
       return !!this.contentList.filter(i => i.isEdit).length
     },
-    disabled(){
+    disabled () {
       return this.checkedMemo.length >= 100
     },
     checkedMemo () {
@@ -90,7 +105,21 @@ export default {
       }`
     }
   },
+  created () {
+    this.date = this.setDate()
+    this.geImportCount(this.date)
+  },
   methods: {
+    checkAllChange (val) {
+      this.contentList = this.contentList.map((i, idx) => {
+        if (val && idx <= 99) {
+          i.checked = true
+          return i
+        }
+        i.checked = false
+        return i
+      })
+    },
     updateTag (tag) {
       this.tag = tag
     },
@@ -104,6 +133,7 @@ export default {
       fly
         .post(url, data)
         .then(res => {
+          this.importCount += 1
           if (index < list.length - 1) {
             setTimeout(() => {
               this.index += 1
@@ -156,22 +186,18 @@ export default {
       }
     },
     parse (options) {
-      const { split, tagPosition } = options
+      const { split, tagPosition, notePosition } = options
       this.contentList = []
       this.$nextTick(() => {
         this.contentList = JSON.parse(JSON.stringify(this.tmpList)).map(i => {
-          let text = ''
-          if (split) {
-            text = `${i.text}\r\n\r\n${split}`
-          } else {
-            text = i.text
+          let text = i.note ? [i.text, split, i.note] : [i.text, split]
+          if(notePosition) text.reverse()
+          if(tagPosition){
+            text.unshift(this.tag)
+          }else{
+            text.push(this.tag)
           }
-          if (tagPosition) {
-            text = `${this.tag}\r\n\r\n${text}`
-          } else {
-            text = `${text}\r\n\r\n${this.tag}`
-          }
-          i.text = text
+          i.text = text.filter(i => i).join('\r\n\r\n')
           return i
         })
         this.confirmCanEdit(options)
@@ -183,6 +209,17 @@ export default {
     reset () {
       this.contentList = []
       this.tmpList = []
+    },
+    setDate () {
+      const D = new Date()
+      const y = D.getFullYear()
+      const m = D.getMonth() + 1
+      const d = D.getDate()
+      return `${y}${m}${d}`
+    },
+    geImportCount (date) {
+      let Obj = JSON.parse(localStorage.getItem('importCount') || '{}')
+      this.importCount = +Obj[date] || 0
     }
   }
 }

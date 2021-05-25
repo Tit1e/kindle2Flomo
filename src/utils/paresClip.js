@@ -16,6 +16,18 @@ function extend (obj) {
   return obj
 }
 
+export function getType(position) {
+  if (position.indexOf('标注') !== -1) {
+    return 1
+  }
+  if (position.indexOf('笔记') !== -1) {
+    return 2
+  }
+  if (position.indexOf('书签') !== -1) {
+    return 2
+  }
+}
+
 var helper = {
   split_created: function (text) {
     text = text.split('|').map(i => i.trim())
@@ -27,9 +39,14 @@ var helper = {
       var hours = match[4] === '上' ? m7 : m7 + 12 === 24 ? 0 : m7 + 12,
         minutes = match[6],
         seconds = match[7]
-
+      var position = text[0].substr(2)
+      var _position = position.replace(/[^0-9]/ig,"")
+      var type = getType(position)
+      // 笔记的 position 为纯数字
       return {
-        position: text[0].substr(2),
+        type: type,
+        position: type === 1 ? position : _position,
+        note: '',
         date: new Date(
           match[1] +
             ' ' +
@@ -46,6 +63,7 @@ var helper = {
       }
     } catch (error) {
       return {
+        note: '',
         position: '',
         date: ''
       }
@@ -73,6 +91,7 @@ function Block (texts) {
   this.date = null
   this.content = ''
   this.texts = texts
+  this.type = ''
 
   this.init()
 }
@@ -98,14 +117,31 @@ Block.prototype.init = function () {
 
 function paresClip (paragraphs) {
   paragraphs = paragraphs.split('==========').filter(i => i)
-
-  const blocks = paragraphs.map(parse_block).filter(i => i)
+  const notes = []
+  const contents = []
+  paragraphs.map(parse_block).forEach(i => {
+    if (i) {
+      if (i.type === 1 && i.content) {
+        contents.push(i)
+      }
+      if (i.type === 2 && i.content) {
+        notes.push(i)
+      }
+    }
+  })
+  notes.forEach(i => {
+    const index = contents.findIndex(v => v.position.indexOf(i.position) !== -1)
+    if (index !== -1) {
+      contents[index].note = i.content
+    }
+  })
   const result = []
-  blocks.forEach(i => {
+  contents.forEach(i => {
     const index = result.findIndex(v => v.title === i.book)
     if (index !== -1) {
       result[index].texts.push({
         text: i.content,
+        note: i.note,
         checked: false,
         isEdit: false
       })
@@ -115,6 +151,7 @@ function paresClip (paragraphs) {
         texts: [
           {
             text: i.content,
+            note: i.note,
             checked: false,
             isEdit: false
           }
@@ -122,6 +159,7 @@ function paresClip (paragraphs) {
       })
     }
   })
+  console.log(result)
   return result.reverse()
 }
 

@@ -41,11 +41,20 @@ body {
   ::-webkit-scrollbar {
     display: none;
   }
+  .pointer{
+    cursor: pointer;
+  }
+  .overauto{
+    overflow: auto;
+  }
   .text-right {
     text-align: right;
   }
   .radio {
     border-radius: 6px;
+  }
+  .fz-12{
+    font-size: 12px;
   }
   .flex {
     display: flex;

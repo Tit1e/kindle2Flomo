@@ -27,12 +27,12 @@
             :auto-upload="false"
             accept=".html,.txt"
           >
-          <div class="upload-content radio flex pd-10">
-            <i class="el-icon-folder-add"></i>
-            <div class="el-upload__text">
-              选择 HTML / TXT 文件
+            <div class="upload-content radio flex pd-10">
+              <i class="el-icon-folder-add"></i>
+              <div class="el-upload__text">
+                选择 HTML / TXT 文件
+              </div>
             </div>
-          </div>
           </el-upload>
           <div class="how">
             <i class="el-icon-question"></i>
@@ -97,8 +97,26 @@
             </el-tag>
           </el-form-item>
         </template>
+        <el-form-item label="">
+          <span slot="label">
+            <el-tooltip class="item" effect="dark" placement="left">
+              <div slot="content" style="width:200px;line-height: 1.5em;">
+                如导入内容含有自己添加的笔记，请使用移动端 APP 导出 HTML 或 My Clippings.txt
+              </div>
+              <i class="el-icon-warning"></i>
+            </el-tooltip>
+            笔记位置：
+          </span>
+          <el-switch
+            v-model="options.notePosition"
+            active-text="摘录上方"
+            inactive-text="摘录下方"
+          >
+          </el-switch>
+        </el-form-item>
         <el-form-item label="分隔符">
           <el-input v-model="options.split" clearable></el-input>
+          <span class="fz-12">分隔符总是在笔记与摘录之间</span>
         </el-form-item>
         <el-form-item label="列表顺序">
           <el-switch
@@ -156,7 +174,8 @@ export default {
         noTag: false,
         reverse: false,
         // false 底部，true 顶部
-        tagPosition: false
+        tagPosition: false,
+        notePosition: false
       },
       tag: '',
       bookList: []
@@ -209,7 +228,7 @@ export default {
         ...options
       })
     },
-    reset(){
+    reset () {
       this.bookList = []
       this.$emit('reset')
     },
@@ -243,8 +262,8 @@ export default {
           })
         })
     },
-    updateData(data){
-      const {title, texts} = data
+    updateData (data) {
+      const { title, texts } = data
       this.options.title = title
       this.$emit('list-update', texts)
       if (!texts.length) {
@@ -304,10 +323,10 @@ export default {
     .how {
       color: inherit;
       font-size: 12px;
-      i{
+      i {
         margin-right: 4px;
       }
-      a{
+      a {
         margin-right: 4px;
         color: inherit;
       }
@@ -315,15 +334,15 @@ export default {
     .el-form-item--mini {
       margin-bottom: 10px;
     }
-    #fileSelect{
+    #fileSelect {
       box-sizing: border-box;
       width: 100%;
-      .upload-content{
+      .upload-content {
         border: 1px dashed #c0c4cc;
         font-size: 14px;
         align-items: center;
         justify-content: center;
-        &:hover{
+        &:hover {
           border: 1px dashed #399375;
         }
         .el-icon-folder-add {
