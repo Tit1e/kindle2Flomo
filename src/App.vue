@@ -34,7 +34,7 @@
           >
             <content-card
               v-for="(item, index) in contentList"
-              :key="item.text"
+              :key="item.text + index"
               class="list-group-item"
               :input.sync="item.text"
               :check.sync="item.checked"
@@ -76,7 +76,7 @@ export default {
       dragOptions: {
         animation: 200
       },
-      importCount: 0
+      importCount: 0,
     }
   },
   watch: {
@@ -145,8 +145,8 @@ export default {
           }
         })
         .catch(e => {
-          this.loading = false
           console.error(e)
+          this.loading = false
           this.$message.error('记录失败')
         })
     },
@@ -186,18 +186,28 @@ export default {
       }
     },
     parse (options) {
-      const { split, tagPosition, notePosition } = options
+      const { split, tagPosition, notePosition, noEmptyLine, onlyTag, noTag } = options
       this.contentList = []
       this.$nextTick(() => {
         this.contentList = JSON.parse(JSON.stringify(this.tmpList)).map(i => {
-          let text = i.note ? [i.text, split, i.note] : [i.text, split]
-          if(notePosition) text.reverse()
-          if(tagPosition){
-            text.unshift(this.tag)
-          }else{
-            text.push(this.tag)
+          const _text = `${i.text}\r\n`
+          // 有笔记并且分隔符有内容时才换行
+          const _split = (i.note) ? `${split}${(split || noEmptyLine) ? '\r\n' : ''}` : ''
+          let textArr = i.note ? [_text, _split, `${i.note}\r\n`] : [_text, _split]
+          // 如果笔记在摘录上方
+          if(notePosition) textArr.reverse()
+          let text = textArr.filter(i => i).join( noEmptyLine ? '' : '\r\n')
+          if(!noTag) {
+            // tag 位置在上方
+            if(tagPosition){
+              // 在上方时空行加在 tag 后
+              text = (onlyTag ? `${this.tag}\r\n\r\n` : (noEmptyLine ? `${this.tag}\r\n` : `${this.tag}\r\n\r\n`)) + text
+            }else{
+              // 在上方时空行加在 tag 前
+              text = text + (onlyTag ? `\r\n${this.tag}` : (noEmptyLine ? this.tag : `\r\n${this.tag}`))
+            }
           }
-          i.text = text.filter(i => i).join('\r\n\r\n')
+          i.text = text
           return i
         })
         this.confirmCanEdit(options)

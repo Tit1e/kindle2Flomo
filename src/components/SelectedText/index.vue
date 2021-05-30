@@ -1,6 +1,6 @@
 <template>
   <div class="selected-text radio flex">
-    <el-tooltip class="item" effect="dark" placement="left">
+    <el-tooltip effect="dark" placement="left">
       <div slot="content" style="width:200px;line-height: 1.5em;">
         未经审视的生活不值得过，未经审视的思想也不应该汇入你的大脑。建议在导入前审视一遍内容。
       </div>
@@ -11,9 +11,9 @@
         </label>
       </div>
     </el-tooltip>
-    <div class="flex-1">
+    <div class="flex-1 flex">
       已选择 <span class="highlight">{{ selected }}</span> 条 MEMO，共
-      <span class="highlight">{{ total }}</span> 条。今天已导入 <span class="highlight">{{importCount}}</span> 条 MEMO
+      <span class="highlight">{{ total }}</span> 条。今天已导入 <span class="highlight">{{importCount}} / 100</span> 条 MEMO
       <a
         class="thanks"
         href="https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg"
@@ -21,6 +21,13 @@
       >
         感谢 LP 的授权
       </a>
+      <div class="pl-10 pointer">
+        <el-tooltip effect="dark" content="发送邮件至：evollyone@outlook.com" placement="bottom">
+          <span style="color:#d96767;">
+            有问题？
+          </span>
+        </el-tooltip>
+      </div>
     </div>
     <div>
       <el-dropdown>
@@ -100,9 +107,6 @@ export default {
   font-weight: bold;
   align-items: center;
   font-size: 15px;
-  .highlight {
-    color: #55bb8e;
-  }
   .thanks {
     color: inherit;
     padding-left: 10px;

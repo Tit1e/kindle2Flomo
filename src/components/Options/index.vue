@@ -27,7 +27,7 @@
             :auto-upload="false"
             accept=".html,.txt"
           >
-            <div class="upload-content radio flex pd-10">
+            <div class="upload-content radio flex pd-10 border">
               <i class="el-icon-folder-add"></i>
               <div class="el-upload__text">
                 选择 HTML / TXT 文件
@@ -41,7 +41,7 @@
               target="_blank"
               >如何导出 HTML？</a
             >
-            <el-tooltip effect="dark" placement="bottom">
+            <el-tooltip effect="dark" placement="right">
               <div slot="content">
                 <div class="pb-10">
                   将 Kindle 通过数据线连接至电脑
@@ -50,9 +50,31 @@
                   文件位于：Kindle根目录 - document - My Clippings.txt
                 </div>
               </div>
-              <span>My Clippings.txt 在哪？</span>
+              <span class="pointer">My Clippings.txt 在哪？</span>
             </el-tooltip>
           </div>
+        </el-form-item>
+        <el-form-item label-width="0" v-if="isElectron">
+          <div class="pointer text-center border pd-10 radio" @click="importNotes">
+            从 Apple Books 导入
+          </div>
+        </el-form-item>
+        <el-form-item label-width="0" v-else>
+          <div class="pointer text-center border pd-10 radio">
+            <el-tooltip effect="dark" placement="right">
+              <div slot="content">
+                由于 Apple Books 笔记存储类型限制，只能通过安装应用读取。
+                <br>
+                文件访问密码：47if
+              </div>
+              <a href="https://wwr.lanzoui.com/b02c3nkyf" target="_blank">
+                从 Apple Books 导入
+              </a>
+            </el-tooltip>
+          </div>
+          <a class="how" href="https://evolly.one/2021/05/30/158-mac-handle-bad-app/" target="_blank">
+            Kindle2Flomo.app 打不开？
+          </a>
         </el-form-item>
         <el-form-item label="选择书籍" v-if="bookList.length">
           <el-select v-model="options.book" @change="selectChange">
@@ -91,17 +113,13 @@
             >
             </el-switch>
           </el-form-item>
-          <el-form-item label="tag 示例">
-            <el-tag size="small">
-              {{ tag }}
-            </el-tag>
-          </el-form-item>
         </template>
         <el-form-item label="">
           <span slot="label">
             <el-tooltip class="item" effect="dark" placement="left">
               <div slot="content" style="width:200px;line-height: 1.5em;">
-                如导入内容含有自己添加的笔记，请使用移动端 APP 导出 HTML 或 My Clippings.txt
+                如导入内容含有自己添加的笔记，请使用移动端 APP 导出 HTML 或 My
+                Clippings.txt
               </div>
               <i class="el-icon-warning"></i>
             </el-tooltip>
@@ -115,8 +133,18 @@
           </el-switch>
         </el-form-item>
         <el-form-item label="分隔符">
-          <el-input v-model="options.split" clearable></el-input>
-          <span class="fz-12">分隔符总是在笔记与摘录之间</span>
+            <el-input v-model="options.split" placeholder="为空以空行填充，此空行无法禁用" clearable></el-input>
+          <span class="fz-12">分隔符<b class="highlight">仅在有笔记时生效</b>，且总在笔记与摘录之间</span>
+        </el-form-item>
+        <el-form-item label="空行设置">
+          <div class="flex">
+            <div class="flex-1 pl-10">
+              <el-checkbox v-model="options.onlyTag" @change="onlyTagChange">仅 Tag 前 / 后</el-checkbox>
+            </div>
+            <div class="flex-1 pl-10">
+              <el-checkbox v-model="options.noEmptyLine" :disabled="options.onlyTag">禁用</el-checkbox>
+            </div>
+          </div>
         </el-form-item>
         <el-form-item label="列表顺序">
           <el-switch
@@ -151,6 +179,8 @@
 <script>
 import readFile from '@/utils/readFile.js'
 import paresClip from '@/utils/paresClip.js'
+import readSQLite from '@/utils/readSQLite.js'
+import { Loading } from 'element-ui';
 export default {
   name: 'Options',
   props: {
@@ -175,10 +205,13 @@ export default {
         reverse: false,
         // false 底部，true 顶部
         tagPosition: false,
-        notePosition: false
+        notePosition: false,
+        noEmptyLine: true,
+        onlyTag: false
       },
       tag: '',
-      bookList: []
+      bookList: [],
+      isElectron: !!process.env.IS_ELECTRON
     }
   },
   watch: {
@@ -207,6 +240,37 @@ export default {
     })
   },
   methods: {
+    onlyTagChange(val){
+      // 只在 tag 前后时，禁用空行
+      if(val){
+        this.options.noEmptyLine = true
+      }
+    },
+    importNotes () {
+      const loadingInstance = Loading.service({
+        body: true,
+        lock: true,
+        text: '正在读取笔记'
+      })
+      readSQLite()
+        .then(res => {
+          this.bookList = res
+          try {
+            setTimeout(() => {
+              const data = this.bookList[0]
+              this.options.book = data.title
+              this.updateData(data)
+              loadingInstance.close()
+            }, 1500)
+          } catch (error) {
+            loadingInstance.close();
+          }
+        })
+        .catch(e => {
+          this.$message.error(e)
+          loadingInstance.close();
+        })
+    },
     selectChange (val) {
       const data = this.bookList.find(i => i.title === val)
       this.updateData(data)
@@ -273,14 +337,16 @@ export default {
       }
     },
     updateOptions () {
-      const { noTag, api, tag, split, tagPosition, reverse } = this.options
+      const { noTag, api, tag, split, tagPosition, reverse, noEmptyLine, onlyTag } = this.options
       const options = {
         noTag,
         api,
         tag,
         split,
         tagPosition,
-        reverse
+        reverse,
+        noEmptyLine,
+        onlyTag
       }
       localStorage.setItem('options', JSON.stringify(options))
     },
@@ -338,13 +404,9 @@ export default {
       box-sizing: border-box;
       width: 100%;
       .upload-content {
-        border: 1px dashed #c0c4cc;
         font-size: 14px;
         align-items: center;
         justify-content: center;
-        &:hover {
-          border: 1px dashed #399375;
-        }
         .el-icon-folder-add {
           font-size: 1.4em;
           margin-right: 10px;

@@ -115,8 +115,10 @@ Block.prototype.init = function () {
 }
 
 
-function paresClip (paragraphs) {
+function paresClip(paragraphs) {
+  // 分割笔记
   paragraphs = paragraphs.split('==========').filter(i => i)
+  // 将摘录与笔记分离
   const notes = []
   const contents = []
   paragraphs.map(parse_block).forEach(i => {
@@ -129,6 +131,7 @@ function paresClip (paragraphs) {
       }
     }
   })
+  // 将笔记归到摘录之下
   notes.forEach(i => {
     const index = contents.findIndex(v => v.position.indexOf(i.position) !== -1)
     if (index !== -1) {
@@ -159,7 +162,6 @@ function paresClip (paragraphs) {
       })
     }
   })
-  console.log(result)
   return result.reverse()
 }
 

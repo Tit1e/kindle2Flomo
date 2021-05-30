@@ -1,6 +1,6 @@
 {
   "name": "kindletoflomo",
-  "version": "1.1.0",
+  "version": "1.5.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -13,8 +13,11 @@
   },
   "main": "background.js",
   "dependencies": {
+    "aws-sdk": "^2.918.0",
+    "bplist-parser": "^0.3.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.4.5",
+    "sqlite3": "^5.0.2",
     "vue": "^2.6.11",
     "vuedraggable": "^2.24.3"
   },
@@ -22,13 +25,12 @@
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "cheerio": "^1.0.0-rc.9",
-    "electron": "^12.0.9",
+    "electron": "^8.0.0",
     "electron-devtools-installer": "^3.1.0",
-    "electron-prebuilt": "^1.4.13",
     "flyio": "^0.6.14",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "vue-cli-plugin-electron-builder": "^2.0.0",
+    "vue-cli-plugin-electron-builder": "~2.0.0",
     "vue-cli-plugin-element": "^1.0.1",
     "vue-template-compiler": "^2.6.11"
   },
