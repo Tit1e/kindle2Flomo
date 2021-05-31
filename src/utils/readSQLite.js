@@ -13,8 +13,8 @@ if (process.env.IS_ELECTRON) {
   db = require('@/db/sqlite.js').db
   readSQLite = function () {
     const homedir = os.homedir()
-    const path =
-      '/Library/Containers/com.apple.iBooksX/Data/Documents/AEAnnotation/'
+    // const path = '/Library/Containers/com.apple.iBooksX/Data/Documents/AEAnnotation/'
+    const path = '/Desktop/text/'
     let files = ''
     try {
       files = fs.readdirSync(`${homedir}${path}`)
@@ -43,7 +43,8 @@ if (process.env.IS_ELECTRON) {
         `,
         async function (err, res) {
           if (!err) {
-            const plistPath = `${homedir}/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/Books.plist`
+            // const plistPath = `${homedir}/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/Books.plist`
+            const plistPath = `${homedir}/Desktop/text/Books.plist`
             let plistData = {}
             let books = []
             try {
@@ -79,7 +80,7 @@ if (process.env.IS_ELECTRON) {
               console.log(error)
             }
             resolve(
-              books.map(j => {
+              books.filter(i => i.texts).map(j => {
                 return {
                   title: j.BKDisplayName,
                   texts: j.texts
