@@ -15,4 +15,5 @@
 ![](./screenshot/web.png)
 
 
-
+## 开发注意事项
+**bplistParser** 这个依赖需手动修改 `maxObjectSize` 与 `maxObjectCount` 这两个常量的数值，修改得大一些，否则当 `Books.plist` 中图书数量过多时会出现无法解析的问题。
