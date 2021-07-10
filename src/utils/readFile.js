@@ -1,6 +1,10 @@
 const cheerio = require('cheerio')
 import { getType } from './paresClip'
-function readFile (text) {
+function readFile(text) {
+  // var _text = text.replace(/<\/div><div class='noteText'>/g, "<div class='noteText'>")
+  //               .replace(/<\/h3>/g, "</div></h3>")
+  // console.log(_text)
+  // return 
   const $ = cheerio.load(text)
   let titleNode = $('.bookTitle')[0]
   const title = $(titleNode)
@@ -11,6 +15,7 @@ function readFile (text) {
   const tempNotes = []
   while (nodes.length) {
     const element = nodes.pop()
+    console.log(element)
     const type = getType(element.prev.prev.children[0].data)
     const text = element.children
       .filter(i => i.type === 'text')

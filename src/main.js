@@ -7,6 +7,8 @@ import '@/assets/css/index.scss'
 
 Vue.config.productionTip = false
 
+Vue.prototype.$EventBus = new Vue()
+
 new Vue({
   render: h => h(App),
 }).$mount('#app')

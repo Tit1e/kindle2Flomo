@@ -1,6 +1,6 @@
 {
   "name": "kindletoflomo",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.9",
     "electron": "^8.0.0",
     "electron-devtools-installer": "^3.1.0",

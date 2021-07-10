@@ -4,6 +4,7 @@ import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const { session } = require('electron')
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -24,6 +25,13 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
+  // const filter = {
+  //   urls: ['https://weread.qq.com/*']
+  // }
+  // session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+  //   console.log(details.requestHeaders.Cookie)
+  //   callback(details)
+  // })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -64,6 +72,11 @@ app.on('ready', async () => {
     }
   }
   createWindow()
+
+  // session.defaultSession.cookies.get({ url: "https://weread.qq.com" }, function (error, cookies) {
+  //   alert(1)
+  //   console.log(cookies);
+  // });
 })
 
 // Exit cleanly on request from parent process in development mode.

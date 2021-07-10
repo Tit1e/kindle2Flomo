@@ -55,8 +55,19 @@
           </div>
         </el-form-item>
         <el-form-item label-width="0" v-if="isElectron">
-          <div class="pointer text-center border pd-10 radio" @click="importNotes">
-            从 Apple Books 导入
+          <div class="flex thired-import">
+            <div
+              class="pointer text-center border pd-10 radio flex-item"
+              @click="importAppleBooks"
+            >
+              Apple Books
+            </div>
+            <div
+              class="pointer text-center border pd-10 radio flex-item"
+              @click="importWeRead"
+            >
+              微信读书
+            </div>
           </div>
         </el-form-item>
         <el-form-item label-width="0" v-else>
@@ -64,7 +75,7 @@
             <el-tooltip effect="dark" placement="right">
               <div slot="content">
                 由于 Apple Books 笔记存储类型限制，只能通过安装应用读取。
-                <br>
+                <br />
                 文件访问密码：47if
               </div>
               <a href="https://wwr.lanzoui.com/b02c3nkyf" target="_blank">
@@ -72,7 +83,11 @@
               </a>
             </el-tooltip>
           </div>
-          <a class="how" href="https://evolly.one/2021/05/30/158-mac-handle-bad-app/" target="_blank">
+          <a
+            class="how"
+            href="https://evolly.one/2021/05/30/158-mac-handle-bad-app/"
+            target="_blank"
+          >
             Kindle2Flomo.app 打不开？
           </a>
         </el-form-item>
@@ -133,16 +148,29 @@
           </el-switch>
         </el-form-item>
         <el-form-item label="分隔符">
-            <el-input v-model="options.split" placeholder="为空以空行填充，此空行无法禁用" clearable></el-input>
-          <span class="fz-12">分隔符<b class="highlight">仅在有笔记时生效</b>，且总在笔记与摘录之间</span>
+          <el-input
+            v-model="options.split"
+            placeholder="为空以空行填充，此空行无法禁用"
+            clearable
+          ></el-input>
+          <span class="fz-12"
+            >分隔符<b class="highlight">仅在有笔记时生效</b
+            >，且总在笔记与摘录之间</span
+          >
         </el-form-item>
         <el-form-item label="空行设置">
           <div class="flex">
             <div class="flex-1 pl-10">
-              <el-checkbox v-model="options.onlyTag" @change="onlyTagChange">仅 Tag 前 / 后</el-checkbox>
+              <el-checkbox v-model="options.onlyTag" @change="onlyTagChange"
+                >仅 Tag 前 / 后</el-checkbox
+              >
             </div>
             <div class="flex-1 pl-10">
-              <el-checkbox v-model="options.noEmptyLine" :disabled="options.onlyTag">禁用</el-checkbox>
+              <el-checkbox
+                v-model="options.noEmptyLine"
+                :disabled="options.onlyTag"
+                >禁用</el-checkbox
+              >
             </div>
           </div>
         </el-form-item>
@@ -173,6 +201,15 @@
         >导入 Flomo</el-button
       >
     </div>
+    <el-dialog class="login-dialog" :visible.sync="showDialog" width="270px">
+      <div class="iframe-box" v-loading="loading">
+        <iframe
+          v-if="showDialog"
+          src="https://weread.qq.com/#login"
+          frameborder="0"
+        ></iframe>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -180,7 +217,9 @@
 import readFile from '@/utils/readFile.js'
 import paresClip from '@/utils/paresClip.js'
 import readSQLite from '@/utils/readSQLite.js'
-import { Loading } from 'element-ui';
+import { Loading } from 'element-ui'
+import { getBookshelf, getBookMarkList, getReviewList } from '@/utils/weread.js'
+import axios from 'axios'
 export default {
   name: 'Options',
   props: {
@@ -211,7 +250,12 @@ export default {
       },
       tag: '',
       bookList: [],
-      isElectron: !!process.env.IS_ELECTRON
+      isElectron: !!process.env.IS_ELECTRON,
+      showDialog: false,
+      cookie: null,
+      loading: false,
+      logout: false,
+      firstLoad: false,
     }
   },
   watch: {
@@ -240,13 +284,50 @@ export default {
     })
   },
   methods: {
-    onlyTagChange(val){
+    onlyTagChange (val) {
       // 只在 tag 前后时，禁用空行
-      if(val){
+      if (val) {
         this.options.noEmptyLine = true
       }
     },
-    importNotes () {
+    importWeRead () {
+      this.loading = true
+      this.showDialog = true
+
+      const { session } = require('electron').remote
+      const filter = {
+        urls: ['https://weread.qq.com/*']
+      }
+      session.defaultSession.webRequest.onBeforeSendHeaders(
+        filter,
+        (details, callback) => {
+          if(!this.firstLoad){
+            const cookie = details.requestHeaders.Cookie
+            this.cookie = cookie
+            if (!this.logout) {
+              getBookshelf(cookie)
+                .then(res => {
+                  this.firstLoad = true
+                  this.showDialog = false
+                  this.loading = false
+                  this.handleBooksData(res)
+                })
+                .catch(({ errmsg }) => {
+                  this.loading = false
+                  this.firstLoad = false
+                  if (errmsg === '登录超时') {
+                    this.logout = true
+                  }
+                })
+            } else {
+              this.loading = false
+            }
+          }
+          callback(details)
+        }
+      )
+    },
+    importAppleBooks () {
       const loadingInstance = Loading.service({
         body: true,
         lock: true,
@@ -254,26 +335,52 @@ export default {
       })
       readSQLite()
         .then(res => {
-          this.bookList = res
           try {
             setTimeout(() => {
-              const data = this.bookList[0]
-              this.options.book = data.title
-              this.updateData(data)
+              this.handleBooksData(res)
               loadingInstance.close()
             }, 1500)
           } catch (error) {
-            loadingInstance.close();
+            loadingInstance.close()
           }
         })
         .catch(e => {
           this.$message.error(e)
-          loadingInstance.close();
+          loadingInstance.close()
         })
+    },
+    handleBooksData (bookList) {
+      this.bookList = bookList
+      const data = bookList[0]
+      this.options.book = data.title
+      this.updateData(data)
     },
     selectChange (val) {
       const data = this.bookList.find(i => i.title === val)
-      this.updateData(data)
+      if (data.bookId && !data.loaded) {
+        const ReviewList = getReviewList(
+          {
+            bookId: data.bookId,
+            listType: 11,
+            maxIdx: 0,
+            count: 0,
+            listMode: 2,
+            synckey: 0,
+            mine: 1
+          },
+          this.cookie
+        )
+        const BookMarkList = getBookMarkList(data.bookId)
+        Promise.all([ReviewList, BookMarkList]).then(([reviewList, bookMarkList]) => {
+          data.texts = [...reviewList, ...bookMarkList]
+          data.loaded = true
+          this.updateData(data)
+        }).catch(e => {
+          console.log(e)
+        })
+      }else{
+        this.updateData(data)
+      }
     },
     parse () {
       this.updateOptions()
@@ -327,17 +434,26 @@ export default {
         })
     },
     updateData (data) {
-      const { title, texts } = data
+      const { title, texts, bookId } = data
       this.options.title = title
       this.$emit('list-update', texts)
-      if (!texts.length) {
+      if (!texts.length && !bookId) {
         this.$message.warning('未发现有效内容')
       } else {
         this.parse()
       }
     },
     updateOptions () {
-      const { noTag, api, tag, split, tagPosition, reverse, noEmptyLine, onlyTag } = this.options
+      const {
+        noTag,
+        api,
+        tag,
+        split,
+        tagPosition,
+        reverse,
+        noEmptyLine,
+        onlyTag
+      } = this.options
       const options = {
         noTag,
         api,
@@ -400,6 +516,13 @@ export default {
     .el-form-item--mini {
       margin-bottom: 10px;
     }
+    .thired-import {
+      justify-content: space-between;
+      .flex-item {
+        width: calc(50% - 5px);
+        box-sizing: border-box;
+      }
+    }
     #fileSelect {
       box-sizing: border-box;
       width: 100%;
@@ -428,6 +551,22 @@ export default {
     cursor: pointer;
     input {
       display: none;
+    }
+  }
+  .login-dialog {
+    ::v-deep .el-dialog__header {
+      display: none !important;
+    }
+    ::v-deep .el-dialog__body {
+      padding: 10px !important;
+    }
+  }
+  .iframe-box {
+    width: 100%;
+    height: 300px;
+    iframe {
+      width: 100%;
+      height: 100%;
     }
   }
 }
