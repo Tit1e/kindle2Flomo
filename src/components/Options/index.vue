@@ -73,13 +73,15 @@
         <el-form-item label-width="0" v-else>
           <div class="pointer text-center border pd-10 radio">
             <el-tooltip effect="dark" placement="right">
-              <div slot="content">
-                由于 Apple Books 笔记存储类型限制，只能通过安装应用读取。
+              <div slot="content" style="line-height: 1.5em">
+                由于 Apple Books 与微信读书笔记的笔记读取方式限制，只能通过安装应用读取。
+                <br />
+                <span style="color:#d96767;">下载文件夹下版本号最新的安装包</span>
                 <br />
                 文件访问密码：47if
               </div>
               <a href="https://wwr.lanzoui.com/b02c3nkyf" target="_blank">
-                从 Apple Books 导入
+                从 Apple Books / 微信读书 导入
               </a>
             </el-tooltip>
           </div>
@@ -317,6 +319,7 @@ export default {
                   this.firstLoad = false
                   if (errmsg === '登录超时') {
                     this.logout = true
+                    window.location.reload()
                   }
                 })
             } else {
@@ -352,6 +355,7 @@ export default {
     handleBooksData (bookList) {
       this.bookList = bookList
       const data = bookList[0]
+      if(data.bookId) this.selectChange(data.title)
       this.options.book = data.title
       this.updateData(data)
     },

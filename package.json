@@ -28,7 +28,6 @@
     "cheerio": "^1.0.0-rc.9",
     "electron": "^8.0.0",
     "electron-devtools-installer": "^3.1.0",
-    "flyio": "^0.6.14",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-electron-builder": "~2.0.0",

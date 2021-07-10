@@ -23,6 +23,7 @@
       </a>
       <div class="pl-10 pointer">
         <el-tooltip effect="dark" content="发送邮件至：evollyone@outlook.com" placement="bottom">
+          <img slot="content" width="200px" height="200px" src="https://gblobscdn.gitbook.com/assets%2F-MVEe4qiW5TBO3wosktr%2F-McqOyO9scmhvjxOKjqy%2F-McqT6ENIJnzZEGJhoeX%2F%E5%9B%BE%E7%89%87.png?alt=media&token=a1a523d4-f926-4615-b1de-b6fced4c46ab" alt="" srcset="">
           <span style="color:#d96767;">
             有问题？
           </span>

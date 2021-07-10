@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import fly from 'flyio'
+import axios from 'axios'
 import ContentCard from '@/components/ContentCard'
 import Options from '@/components/Options'
 import SelectedText from '@/components/SelectedText'
@@ -130,7 +130,7 @@ export default {
       const data = {
         content: list[index].text
       }
-      fly
+      axios
         .post(url, data)
         .then(res => {
           this.importCount += 1

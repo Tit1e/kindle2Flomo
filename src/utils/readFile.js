@@ -1,11 +1,20 @@
 const cheerio = require('cheerio')
 import { getType } from './paresClip'
-function readFile(text) {
-  // var _text = text.replace(/<\/div><div class='noteText'>/g, "<div class='noteText'>")
-  //               .replace(/<\/h3>/g, "</div></h3>")
-  // console.log(_text)
-  // return 
-  const $ = cheerio.load(text)
+function readFile(sourceText) {
+  // 先出去 html 字符串中标签与文本间的空格，再去除字符串内所有的换行符
+  let text = sourceText.replace(/(?<=\>[^<]*?) /g, "")
+                      .replace(/\n|\r/g, "")
+  let $ = cheerio.load(text)
+  // 判断是否是 PC 上导出的 html 文件
+  // 有 class 是 noteHeading 的 < h3 > 标签的就是从 PC 端导出的
+  if ($('h3.noteHeading').length) {
+    // 处理标签闭合问题
+    // 替换顺序不能换，否则之前替换好的又会被覆盖
+    text = text.replace(/<\/h3>/g, "</div>")
+              .replace(/<\/div><div class='noteText'>/g, "</h3><div class='noteText'>")
+    $ = cheerio.load(text)
+  }
+
   let titleNode = $('.bookTitle')[0]
   const title = $(titleNode)
     .text()
@@ -15,8 +24,7 @@ function readFile(text) {
   const tempNotes = []
   while (nodes.length) {
     const element = nodes.pop()
-    console.log(element)
-    const type = getType(element.prev.prev.children[0].data)
+    const type = getType(element.prev.children[0].data)
     const text = element.children
       .filter(i => i.type === 'text')
       .map(i => i.data.trim())
