@@ -20,7 +20,7 @@ export function getType(position) {
   if (position.indexOf('标注') !== -1) {
     return 1
   }
-  if (position.indexOf('笔记') !== -1) {
+  if (position.indexOf('笔记') !== -1 || position.indexOf('备注') !== -1) {
     return 2
   }
   if (position.indexOf('书签') !== -1) {
