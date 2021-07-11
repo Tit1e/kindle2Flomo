@@ -27,8 +27,7 @@ const headers = {
 axios.interceptors.request.use(
   function (config) {
     return {
-      ...config,
-      headers: headers
+      ...config
     }
   },
   function (error) {
@@ -61,6 +60,7 @@ export const get_bookmarklist = bookId => {
   return axios({
     method: 'get',
     url: '/book/bookmarklist',
+    headers,
     params: {
       bookId
     }
@@ -71,6 +71,7 @@ export const get_bestbookmarks = bookId => {
   return axios({
     method: 'get',
     url: '/book/bestbookmarks',
+    headers,
     params: {
       bookId
     }
@@ -81,6 +82,7 @@ export const get_bookshelf = (cookie) => {
   return axios({
     method: 'get',
     url: '/shelf/friendCommon',
+    headers,
     params: {
       userVid: getUid(cookie)
     }
@@ -90,6 +92,7 @@ export const get_bookshelf = (cookie) => {
 export const get_notebooklist = () => {
   return axios({
     method: 'get',
+    headers,
     url: '/user/notebooks'
   })
 }
@@ -98,6 +101,7 @@ export const get_bookinfo = bookId => {
   return axios({
     method: 'get',
     url: '/book/info',
+    headers,
     params: {
       bookId
     }
@@ -110,6 +114,7 @@ export const get_reviewlist = (params, cookie) => {
     method: 'get',
     url: '/web/review/list',
     baseURL: 'https://weread.qq.com',
+    headers,
     params: {
       userVid: getUid(cookie),
       ...params
