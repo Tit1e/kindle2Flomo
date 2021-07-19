@@ -17,28 +17,29 @@ function extend (obj) {
 }
 
 export function getType(position) {
-  if (position.indexOf('标注') !== -1) {
+  if (position.indexOf('标注') !== -1 || position.indexOf('Highlight') !== -1) {
     return 1
   }
   if (position.indexOf('笔记') !== -1 || position.indexOf('备注') !== -1) {
     return 2
   }
-  if (position.indexOf('书签') !== -1) {
+  if (position.indexOf('书签') !== -1 || position.indexOf('Bookmark') !== -1) {
     return 2
   }
+  return 2
 }
 
 var helper = {
   split_created: function (text) {
     text = text.split('|').map(i => i.trim())
     try {
-      var re = /添加于\s+(\d{4})年(\d+)月(\d+)日.*(上|下)午(\d+):(\d+):(\d+)$/,
-        match = re.exec(text[1])
-      var m7 = +match[5]
+      // var re = /添加于\s+(\d{4})年(\d+)月(\d+)日.*(上|下)午(\d+):(\d+):(\d+)$/,
+      //   match = re.exec(text[1])
+      // var m7 = +match[5]
 
-      var hours = match[4] === '上' ? m7 : m7 + 12 === 24 ? 0 : m7 + 12,
-        minutes = match[6],
-        seconds = match[7]
+      // var hours = match[4] === '上' ? m7 : m7 + 12 === 24 ? 0 : m7 + 12,
+      //   minutes = match[6],
+      //   seconds = match[7]
       var position = text[0].substr(2)
       var _position = position.replace(/[^0-9]/ig,"")
       var type = getType(position)
@@ -47,19 +48,19 @@ var helper = {
         type: type,
         position: type === 1 ? position : _position,
         note: '',
-        date: new Date(
-          match[1] +
-            ' ' +
-            match[2] +
-            ' ' +
-            match[3] +
-            ' ' +
-            hours +
-            ':' +
-            minutes +
-            ':' +
-            seconds
-        )
+        // date: new Date(
+        //   match[1] +
+        //     ' ' +
+        //     match[2] +
+        //     ' ' +
+        //     match[3] +
+        //     ' ' +
+        //     hours +
+        //     ':' +
+        //     minutes +
+        //     ':' +
+        //     seconds
+        // )
       }
     } catch (error) {
       return {
@@ -74,9 +75,15 @@ var helper = {
     try {
       var re = /(.+)\((.+)\)/,
         match = re.exec(text)
+      if (match) {
+        return {
+          book: match[1].trim(),
+          author: match[2].trim()
+        }
+      }
       return {
-        book: match[1].trim(),
-        author: match[2].trim()
+        book: text,
+        author: ''
       }
     } catch (error) {
       console.log(error)
@@ -97,8 +104,11 @@ function Block (texts) {
 }
 
 Block.prototype.init = function () {
-  var para_arr = this.texts.split('\r\n').filter(i => i)
-
+  var para_arr = this.texts
+    .replace(/^(\n|\r)*/g, '') // 将开头的换行去除
+    .replace(/(\n|\r)*$/g, '') //将结尾的换行去除
+    .split('\r\n')
+    .filter(i => i && i !== '\n' && i !== '\r') // 除了空字符串，还需将换行符过滤掉
   var data = null
 
   data = helper.split_book(para_arr[0])
