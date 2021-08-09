@@ -6,10 +6,16 @@
 
 ## 注册 [flomo](https://flomoapp.com/register2/?MTAzNDE)
 
-### 在线访问地址：[Kindle2Flomo](https://tit1e.github.io/kindle2Flomo/)
+## 在线访问地址：[Kindle2Flomo](https://tit1e.github.io/kindle2Flomo/)
 
-### Mac [应用下载](https://wwr.lanzoui.com/iIFx3pdxvvi)
+## Mac 应用下载
+* [蓝奏云](https://wwr.lanzoui.com/b02c3nkyf) 密码:47if
+* [releases](https://github.com/Tit1e/kindle2Flomo/releases)
 
+## 问题反馈
+![](https://personal-1251959693.cos.ap-chengdu.myqcloud.com/2021-08-09-kindle2flomo%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88.png)
+
+## 预览
 ![](./screenshot/mac.png)
 
 ![](./screenshot/web.png)
