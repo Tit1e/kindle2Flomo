@@ -79,6 +79,8 @@
                 <span style="color:#d96767;">下载文件夹下版本号最新的安装包</span>
                 <br />
                 文件访问密码：47if
+                <br />
+                或者去 <a style="color:#d96767;" href="https://github.com/Tit1e/kindle2Flomo/releases" target="_blank">GitHub</a> 下载
               </div>
               <a href="https://wwr.lanzoui.com/b02c3nkyf" target="_blank">
                 从 Apple Books / 微信读书 导入
@@ -195,13 +197,26 @@
         @click="parse"
         >解析</el-button
       >
-      <el-button
+      <template v-if="disabledSend">
+        <el-tooltip effect="dark" :disabled="false" content="请确保 API 已填写，需要导入的 MEMO 已勾选" placement="top">
+          <span style="margin-left: 10px;">
+            <el-button
+              type="primary"
+              :disabled="disabledSend"
+              size="mini"
+              >导入 Flomo</el-button
+            >
+          </span>
+        </el-tooltip>
+      </template>
+      <template v-else>
+        <el-button
         type="primary"
-        :disabled="disabledSend"
         size="mini"
         @click="submit"
         >导入 Flomo</el-button
       >
+      </template>
     </div>
     <el-dialog class="login-dialog" :visible.sync="showDialog" width="270px">
       <div class="iframe-box" v-loading="loading">
