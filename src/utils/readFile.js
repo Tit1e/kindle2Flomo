@@ -1,9 +1,10 @@
 const cheerio = require('cheerio')
 import { getType } from './paresClip'
 function readFile(sourceText) {
-  // 先出去 html 字符串中标签与文本间的空格，再去除字符串内所有的换行符
-  let text = sourceText.replace(/(?<=\>[^<]*?) /g, "")
-                      .replace(/\n|\r/g, "")
+  console.log(sourceText)
+  // 除字符串内所有的换行符
+  let text = sourceText
+    .replace(/\n|\r/g, "")
   let $ = cheerio.load(text)
   // 判断是否是 PC 上导出的 html 文件
   // 有 class 是 noteHeading 的 < h3 > 标签的就是从 PC 端导出的
