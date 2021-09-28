@@ -34,7 +34,7 @@ export function getNotebooklist() {
           bookId: i.bookId,
           texts: []
         }
-     })
+     }).reverse()
      resolve(list)
     }).catch(e => {
       if(e === 401) clearCookies()
