@@ -9,12 +9,14 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
-
+app.allowRendererProcessReuse = true
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
+    frame: false,
+    titleBarStyle: 'hidden',
     webPreferences: {
       // 禁用安全策略
       webSecurity: false,
@@ -24,13 +26,6 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
-  // const filter = {
-  //   urls: ['https://weread.qq.com/*']
-  // }
-  // session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
-  //   console.log(details.requestHeaders.Cookie)
-  //   callback(details)
-  // })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -71,11 +66,6 @@ app.on('ready', async () => {
     }
   }
   createWindow()
-
-  // session.defaultSession.cookies.get({ url: "https://weread.qq.com" }, function (error, cookies) {
-  //   alert(1)
-  //   console.log(cookies);
-  // });
 })
 
 // Exit cleanly on request from parent process in development mode.
