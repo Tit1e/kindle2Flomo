@@ -218,13 +218,17 @@
       >
       </template>
     </div>
-    <el-dialog class="login-dialog" :visible.sync="showDialog" width="270px">
+    <el-dialog class="login-dialog" :visible.sync="showDialog" :close-on-click-modal="false" width="270px">
       <div class="iframe-box" v-loading="loading">
         <iframe
           v-if="showDialog"
           src="https://weread.qq.com/#login"
           frameborder="0"
         ></iframe>
+      </div>
+      <div class="text-center" v-show="!loading">
+        <el-button type="text" style="color: #999999;" @click="showDialog = false">取消</el-button>
+        <el-button type="text" @click="getNotebooklist">我已登录</el-button>
       </div>
     </el-dialog>
   </div>
@@ -235,7 +239,7 @@ import readFile from '@/utils/readFile.js'
 import paresClip from '@/utils/paresClip.js'
 import readSQLite from '@/utils/readSQLite.js'
 import { Loading } from 'element-ui'
-import { getBookshelf, getBookMarkList, getReviewList } from '@/utils/weread.js'
+import { getNotebooklist, getBookMarkList, getReviewList } from '@/utils/weread.js'
 import axios from 'axios'
 export default {
   name: 'Options',
@@ -271,8 +275,6 @@ export default {
       showDialog: false,
       cookie: null,
       loading: false,
-      logout: false,
-      firstLoad: false,
     }
   },
   watch: {
@@ -307,43 +309,21 @@ export default {
         this.options.noEmptyLine = true
       }
     },
+    getNotebooklist(){
+      getNotebooklist()
+        .then(res => {
+          this.showDialog = false
+          this.loading = false
+          this.handleBooksData(res)
+        })
+        .catch((err) => {
+          this.loading = false
+        })
+    },
     importWeRead () {
       this.loading = true
       this.showDialog = true
-
-      const { session } = require('electron').remote
-      const filter = {
-        urls: ['https://weread.qq.com/*']
-      }
-      session.defaultSession.webRequest.onBeforeSendHeaders(
-        filter,
-        (details, callback) => {
-          if(!this.firstLoad){
-            const cookie = details.requestHeaders.Cookie
-            this.cookie = cookie
-            if (!this.logout) {
-              getBookshelf(cookie)
-                .then(res => {
-                  this.firstLoad = true
-                  this.showDialog = false
-                  this.loading = false
-                  this.handleBooksData(res)
-                })
-                .catch(({ errmsg }) => {
-                  this.loading = false
-                  this.firstLoad = false
-                  if (errmsg === '登录超时') {
-                    this.logout = true
-                    window.location.reload()
-                  }
-                })
-            } else {
-              this.loading = false
-            }
-          }
-          callback(details)
-        }
-      )
+      this.getNotebooklist()
     },
     importAppleBooks () {
       const loadingInstance = Loading.service({
@@ -368,7 +348,7 @@ export default {
         })
     },
     handleBooksData (bookList) {
-      this.bookList = bookList
+      this.bookList = bookList.reverse()
       const data = bookList[0]
       if(data.bookId) this.selectChange(data.title)
       this.options.book = data.title

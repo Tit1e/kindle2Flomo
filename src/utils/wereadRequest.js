@@ -1,25 +1,27 @@
 import axios from 'axios'
 axios.defaults.baseURL = 'https://i.weread.qq.com'
 
-function getUid (cookie) {
-  let uid
-  cookie.split(';').forEach(ele => {
-    let [key, value] = ele.trim().split('=')
-    if (key === 'wr_vid') {
-      uid = Number(value)
-    }
+function getUserVid() {
+  return new Promise((r, j) => {
+    const { session } = require('electron').remote
+    session.defaultSession.cookies.get({ url: 'https://weread.qq.com/' }).then(res => {
+      if (res && res.length) {
+        const vid = res.find(i => i.name === 'wr_vid')
+        if (vid) r(vid.value)
+        j(false)
+      }
+      j(false)
+    })
   })
-  return uid
 }
+
 
 const headers = {
   Host: 'i.weread.qq.com',
   Connection: 'keep-alive',
   'Upgrade-Insecure-Requests': 1,
-  'User-Agent':
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
-  Accept:
-    'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
+  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
   'Accept-Encoding': 'gzip, deflate, br',
   'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
 }
@@ -78,18 +80,23 @@ export const get_bestbookmarks = bookId => {
   })
 }
 // 获取书架上的书籍列表
-export const get_bookshelf = (cookie) => {
+export const get_bookshelf = async () => {
+  const userVid = await getUserVid()
   return axios({
     method: 'get',
     url: '/shelf/friendCommon',
     headers,
     params: {
-      userVid: getUid(cookie)
+      userVid
     }
   })
 }
 // 获取你的所有有笔记本书单
-export const get_notebooklist = () => {
+export const get_notebooklist = async () => {
+  const userVid = await getUserVid().catch(e => {})
+  if (!userVid) {
+    return Promise.reject(401)
+  }
   return axios({
     method: 'get',
     headers,
@@ -109,14 +116,15 @@ export const get_bookinfo = bookId => {
 }
 
 // 获取某本书的批注
-export const get_reviewlist = (params, cookie) => {
+export const get_reviewlist = async (params) => {
+  const userVid = await getUserVid()
   return axios({
     method: 'get',
     url: '/web/review/list',
     baseURL: 'https://weread.qq.com',
     headers,
     params: {
-      userVid: getUid(cookie),
+      userVid,
       ...params
     }
   })

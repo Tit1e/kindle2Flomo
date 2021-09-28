@@ -1,49 +1,54 @@
 <template>
   <div id="app" v-loading="loading" :element-loading-text="loadingText">
-    <options
-      :list="contentList"
-      :tmp-list="tmpList"
-      @submit="submit"
-      @parse="confirmFirstParse"
-      @reverse="reverseList"
-      @list-update="listUpdate"
-      @update-tag="updateTag"
-      @reset="reset"
-    />
-    <div class="editor radio flex-v">
-      <selected-text
-        :selected="checkedMemo.length"
-        :total="contentList.length"
-        :import-count="importCount"
-        :disabled="disabled"
-        @change="checkAllChange"
+    <div v-if="isElectron" id="taskBar">
+      Kindle To Flomo
+    </div>
+    <div class="app-body">
+      <options
+        :list="contentList"
+        :tmp-list="tmpList"
+        @submit="submit"
+        @parse="confirmFirstParse"
+        @reverse="reverseList"
+        @list-update="listUpdate"
+        @update-tag="updateTag"
+        @reset="reset"
       />
-      <div class="flex-1 overauto">
-        <draggable
-          v-model="contentList"
-          class="list-group"
-          tag="ul"
-          v-bind="dragOptions"
-          :disabled="dragDisabled"
-          @start="drag = true"
-          @end="drag = false"
-        >
-          <transition-group
-            type="transition"
-            :name="!drag ? 'flip-list' : null"
+      <div class="editor radio flex-v">
+        <selected-text
+          :selected="checkedMemo.length"
+          :total="contentList.length"
+          :import-count="importCount"
+          :disabled="disabled"
+          @change="checkAllChange"
+        />
+        <div class="flex-1 overauto">
+          <draggable
+            v-model="contentList"
+            class="list-group"
+            tag="ul"
+            v-bind="dragOptions"
+            :disabled="dragDisabled"
+            @start="drag = true"
+            @end="drag = false"
           >
-            <content-card
-              v-for="(item, index) in contentList"
-              :key="item.text + index"
-              class="list-group-item"
-              :input.sync="item.text"
-              :check.sync="item.checked"
-              :edit.sync="item.isEdit"
-              :info="item"
-              :disabled="disabled"
-            />
-          </transition-group>
-        </draggable>
+            <transition-group
+              type="transition"
+              :name="!drag ? 'flip-list' : null"
+            >
+              <content-card
+                v-for="(item, index) in contentList"
+                :key="item.text + index"
+                class="list-group-item"
+                :input.sync="item.text"
+                :check.sync="item.checked"
+                :edit.sync="item.isEdit"
+                :info="item"
+                :disabled="disabled"
+              />
+            </transition-group>
+          </draggable>
+        </div>
       </div>
     </div>
   </div>
@@ -77,6 +82,7 @@ export default {
         animation: 200
       },
       importCount: 0,
+      isElectron: !!process.env.IS_ELECTRON
     }
   },
   watch: {
@@ -246,12 +252,29 @@ export default {
   font-weight: bold;
 }
 #app {
-  padding: 10px;
-  background-color: #b7e6d6;
-  height: 100%;
-  box-sizing: border-box;
-  color: #2c3e50;
   display: flex;
+  flex-direction: column;
+  height: 100%;
+  #taskBar{
+    background-color: #b7e6d6;
+    height: 20px;
+    -webkit-app-region: drag;
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: bold;
+    user-select:none;
+  }
+  .app-body{
+    -webkit-app-region: no-drag;
+    padding: 10px;
+    background-color: #b7e6d6;
+    height: 0;
+    flex-grow: 1;
+    box-sizing: border-box;
+    color: #2c3e50;
+    display: flex;
+  }
   .editor {
     overflow: auto;
     padding: 10px;
