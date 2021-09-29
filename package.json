@@ -1,6 +1,6 @@
 {
-  "name": "kindletoflomo",
-  "version": "1.5.6",
+  "name": "send2flomo",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -8,35 +8,29 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps",
-    "fix": "electron-fix start"
+    "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
   "dependencies": {
-    "aws-sdk": "^2.918.0",
+    "axios": "^0.21.4",
     "bplist-parser": "^0.3.0",
+    "cheerio": "^1.0.0-rc.10",
     "core-js": "^3.6.5",
-    "element-ui": "^2.4.5",
+    "element-plus": "^1.1.0-beta.18",
     "sqlite3": "^5.0.2",
-    "vue": "^2.6.11",
-    "vuedraggable": "^2.24.3"
+    "vue": "^3.0.0"
   },
   "devDependencies": {
+    "@types/electron-devtools-installer": "^2.2.0",
     "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "axios": "^0.21.1",
-    "cheerio": "^1.0.0-rc.9",
-    "electron": "^8.0.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "electron": "^13.0.0",
     "electron-devtools-installer": "^3.1.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "vue-cli-plugin-electron-builder": "~2.0.0",
-    "vue-cli-plugin-element": "^1.0.1",
-    "vue-template-compiler": "^2.6.11"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "typescript": "~4.1.5",
+    "vue-cli-plugin-electron-builder": "~2.1.1"
+  }
 }
