@@ -876,6 +876,39 @@
     cssnano-preset-default "^4.0.0"
     postcss "^7.0.0"
 
+"@intlify/core-base@9.2.0-beta.9":
+  version "9.2.0-beta.9"
+  resolved "https://registry.npmmirror.com/@intlify/core-base/download/@intlify/core-base-9.2.0-beta.9.tgz#817ce2201d0173c2ed1b6b8ab2b60d90ac8b524a"
+  dependencies:
+    "@intlify/devtools-if" "9.2.0-beta.9"
+    "@intlify/message-compiler" "9.2.0-beta.9"
+    "@intlify/shared" "9.2.0-beta.9"
+    "@intlify/vue-devtools" "9.2.0-beta.9"
+
+"@intlify/devtools-if@9.2.0-beta.9":
+  version "9.2.0-beta.9"
+  resolved "https://registry.npmmirror.com/@intlify/devtools-if/download/@intlify/devtools-if-9.2.0-beta.9.tgz#36ecd4fc10b6e4e048189bae36c9da01015b9790"
+  dependencies:
+    "@intlify/shared" "9.2.0-beta.9"
+
+"@intlify/message-compiler@9.2.0-beta.9":
+  version "9.2.0-beta.9"
+  resolved "https://registry.npmmirror.com/@intlify/message-compiler/download/@intlify/message-compiler-9.2.0-beta.9.tgz#fa5941b6d77fef760ead2e791d021ce8d500d193"
+  dependencies:
+    "@intlify/shared" "9.2.0-beta.9"
+    source-map "0.6.1"
+
+"@intlify/shared@9.2.0-beta.9":
+  version "9.2.0-beta.9"
+  resolved "https://registry.npmmirror.com/@intlify/shared/download/@intlify/shared-9.2.0-beta.9.tgz#20984d0dbb8259cb8b52a837e12d0ca5a2094f72"
+
+"@intlify/vue-devtools@9.2.0-beta.9":
+  version "9.2.0-beta.9"
+  resolved "https://registry.npmmirror.com/@intlify/vue-devtools/download/@intlify/vue-devtools-9.2.0-beta.9.tgz#53393f52f8dc1ddb1bb08a4a4227729b5128a8ad"
+  dependencies:
+    "@intlify/core-base" "9.2.0-beta.9"
+    "@intlify/shared" "9.2.0-beta.9"
+
 "@malept/cross-spawn-promise@^1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@malept/cross-spawn-promise/-/cross-spawn-promise-1.1.1.tgz#504af200af6b98e198bce768bc1730c6936ae01d"
@@ -1416,6 +1449,10 @@
     vue-template-es2015-compiler "^1.9.0"
   optionalDependencies:
     prettier "^1.18.2"
+
+"@vue/devtools-api@^6.0.0-beta.13":
+  version "6.0.0-beta.18"
+  resolved "https://registry.npmmirror.com/@vue/devtools-api/download/@vue/devtools-api-6.0.0-beta.18.tgz#84c0aff9289a57294cb97490811f69e8a0a67f8a"
 
 "@vue/preload-webpack-plugin@^1.1.0":
   version "1.1.2"
@@ -7610,13 +7647,13 @@ source-map-url@^0.4.0:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.4.1.tgz#0af66605a745a5a2f91cf1bbf8a7afbc283dec56"
 
+source-map@0.6.1, source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.0, source-map@~0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
+
 source-map@^0.5.0, source-map@^0.5.6:
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
-
-source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.0, source-map@~0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
 
 source-map@^0.7.3:
   version "0.7.3"
@@ -8526,6 +8563,15 @@ vue-demi@*:
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
+
+vue-i18n@^9.2.0-beta.9:
+  version "9.2.0-beta.9"
+  resolved "https://registry.npmmirror.com/vue-i18n/download/vue-i18n-9.2.0-beta.9.tgz#64832238fade95602e66429c870d177b1128f230"
+  dependencies:
+    "@intlify/core-base" "9.2.0-beta.9"
+    "@intlify/shared" "9.2.0-beta.9"
+    "@intlify/vue-devtools" "9.2.0-beta.9"
+    "@vue/devtools-api" "^6.0.0-beta.13"
 
 "vue-loader-v16@npm:vue-loader@^16.1.0":
   version "16.8.1"
