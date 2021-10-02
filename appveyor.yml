@@ -6,7 +6,7 @@ branches:
   only:
 - Send2Flomo
 
-image:VisualStudio2017
+image: VisualStudio2017
 platform:
 - x64
 
