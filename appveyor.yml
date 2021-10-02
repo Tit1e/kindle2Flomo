@@ -1,12 +1,12 @@
 # Commented sections below can be used to run tests on the CI server
 # https://simulatedgreg.gitbooks.io/electron-vue/content/en/testing.html#on-the-subject-of-ci-testing
-version: 0.1.{build}
+#version: 0.1.{build}
 
 branches:
   only:
     - Send2Flomo
 
-image: VisualStudio2017
+#image: VisualStudio2017
 platform:
   - x64
 
