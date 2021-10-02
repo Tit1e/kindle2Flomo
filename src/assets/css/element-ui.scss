@@ -1,0 +1,16 @@
+.login-dialog {
+  .el-dialog__header {
+    display: none !important;
+  }
+  .el-dialog__body {
+    padding: 10px !important;
+  }
+}
+.iframe-box {
+  width: 100%;
+  height: 300px;
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
+}

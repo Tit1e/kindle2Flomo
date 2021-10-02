@@ -3,10 +3,11 @@ module.exports = {
   // 第三方插件配置
   pluginOptions: {
     electronBuilder: {
+      productName: 'SendToFlomo',
       nodeIntegration: true,
       builderOptions: {
         // 设置打包之后的应用名称
-        productName: 'Kindle2Flomo',
+        productName: 'Send2Flomo',
         win: {
           icon: 'public/icons/AppIcon.png',
           // 图标路径 windows系统中icon需要256*256的ico格式图片，更换应用图标亦在此处
@@ -82,7 +83,7 @@ module.exports = {
   },
   chainWebpack: config => {
     config.plugin('html').tap(args => {
-      args[0].title = 'Kindle To Flomo'
+      args[0].title = 'Send To Flomo'
       return args
     })
   }

@@ -5,7 +5,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import i18n from '@/language/index'
 import { useI18n } from "vue-i18n"
 const { t, locale } = useI18n()
 let lang = ref(false)

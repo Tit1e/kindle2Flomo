@@ -34,11 +34,11 @@
                   class="mr-10"
                   href="https://mp.weixin.qq.com/s/CPIYoGItJVWJGk30MoVNXA"
                   target="_blank"
-                  >如何导出 HTML？</a
+                  >{{ t('how-export') }}</a
                 >
                 <el-tooltip effect="dark" placement="right">
                   <template #content>
-                    <div >
+                    <div>
                       <div class="pb-10">
                         将 Kindle 通过数据线连接至电脑
                       </div>
@@ -47,7 +47,7 @@
                       </div>
                     </div>
                   </template>
-                  <span class="pointer">My Clippings.txt 在哪？</span>
+                  <span class="pointer">{{ t('where-is--my-clippings') }}</span>
                 </el-tooltip>
               </div>
             </el-form-item>
@@ -63,7 +63,7 @@
                   class="pointer text-center border pd-10 radius flex-item"
                   @click="importWeRead"
                 >
-                  微信读书
+                  {{ t('weread') }}
                 </div>
               </div>
             </el-form-item>
@@ -72,13 +72,23 @@
                 <el-tooltip effect="dark" placement="right">
                   <template #content>
                     <div slot="content" style="line-height: 1.5em">
-                      由于 Apple Books 与微信读书笔记的笔记读取方式限制，只能通过安装应用读取。
+                      由于 Apple Books
+                      与微信读书笔记的笔记读取方式限制，只能通过安装应用读取。
                       <br />
-                      <span style="color:#d96767;">下载文件夹下版本号最新的安装包</span>
+                      <span style="color:#d96767;"
+                        >下载文件夹下版本号最新的安装包</span
+                      >
                       <br />
                       文件访问密码：47if
                       <br />
-                      或者去 <a style="color:#d96767;" href="https://github.com/Tit1e/kindle2Flomo/releases" target="_blank">GitHub</a> 下载
+                      或者去
+                      <a
+                        style="color:#d96767;"
+                        href="https://github.com/Tit1e/kindle2Flomo/releases"
+                        target="_blank"
+                        >GitHub</a
+                      >
+                      下载
                     </div>
                   </template>
                   <a href="https://wwr.lanzoui.com/b02c3nkyf" target="_blank">
@@ -100,7 +110,7 @@
               <el-collapse-item name="1">
                 <template #title>
                   <div>
-                    <i class="el-icon-set-up mr-4"></i>解析设置
+                    <i class="el-icon-set-up mr-4"></i>{{ t('parse-options') }}
                   </div>
                 </template>
                 <el-form-item label="Api">
@@ -121,16 +131,18 @@
                       ></el-input>
                     </div>
                     <div class="flex-1 pl-10">
-                      <el-checkbox v-model="options.noTag">隐藏 tag</el-checkbox>
+                      <el-checkbox v-model="options.noTag">{{
+                        t('hide-tag')
+                      }}</el-checkbox>
                     </div>
                   </div>
                 </el-form-item>
                 <template v-if="!options.noTag">
-                  <el-form-item label="Tag 位置">
+                  <el-form-item :label="t('position-of-tag')">
                     <el-switch
                       v-model="options.tagPosition"
-                      active-text="顶部"
-                      inactive-text="底部"
+                      :active-text="t('top')"
+                      :inactive-text="t('bottom')"
                     >
                     </el-switch>
                   </el-form-item>
@@ -157,7 +169,9 @@
                 <el-form-item label="空行设置">
                   <div class="flex">
                     <div class="flex-1 pl-10">
-                      <el-checkbox v-model="options.onlyTag" @change="onlyTagChange"
+                      <el-checkbox
+                        v-model="options.onlyTag"
+                        @change="onlyTagChange"
                         >仅 Tag 前 / 后</el-checkbox
                       >
                     </div>
@@ -182,18 +196,28 @@
               </el-collapse-item>
               <el-collapse-item name="2">
                 <template #title>
-                  <div>
-                    <i class="el-icon-notebook-2 mr-4"></i>书籍列表
-                  </div>
+                  <div><i class="el-icon-notebook-2 mr-4"></i>书籍列表</div>
                 </template>
                 <template v-if="bookList.length">
                   <el-form-item label="书名">
-                    <el-input v-model="options.title" clearable></el-input>
+                    <el-input v-model="options.title"></el-input>
                   </el-form-item>
                   <el-form-item label="书籍列表" label-width="0">
-                    <el-radio-group class="book-list" v-model="options.book" size="small" @change="selectChange">
-                      <el-radio v-for="item in bookList" :label="item.title" border>{{item.title}}</el-radio>
-                    </el-radio-group>
+                    <div class="list-wrap">
+                      <el-radio-group
+                        class="book-list"
+                        v-model="options.book"
+                        size="small"
+                        @change="selectChange"
+                      >
+                        <el-radio
+                          v-for="item in bookList"
+                          :label="item.title"
+                          border
+                          >{{ item.title }}</el-radio
+                        >
+                      </el-radio-group>
+                    </div>
                   </el-form-item>
                 </template>
               </el-collapse-item>
@@ -208,51 +232,87 @@
         size="mini"
         :disabled="!tmpList.length"
         @click="parse"
-        >解析</el-button
+        >{{ t('parse') }}</el-button
       >
       <template v-if="disabledSend">
-        <el-tooltip effect="dark" :disabled="false" content="请确保 API 已填写，需要导入的 MEMO 已勾选" placement="top">
+        <el-tooltip
+          effect="dark"
+          :disabled="false"
+          content="请确保 API 已填写，需要导入的 MEMO 已勾选"
+          placement="top"
+        >
           <span style="margin-left: 10px;">
-            <el-button
-              type="primary"
-              :disabled="disabledSend"
-              size="mini"
+            <el-button type="primary" :disabled="disabledSend" size="mini"
               >导入 Flomo</el-button
             >
           </span>
         </el-tooltip>
       </template>
       <template v-else>
-        <el-button
-        type="primary"
-        size="mini"
-        @click="submit"
-        >导入 Flomo</el-button
-      >
+        <el-button type="primary" size="mini" @click="submit"
+          >导入 Flomo</el-button
+        >
       </template>
     </div>
+    <!-- 微信登陆弹窗 -->
+    <el-dialog
+      custom-class="login-dialog"
+      v-model="showDialog"
+      :close-on-click-modal="false"
+      append-to-body
+      destroy-on-close
+      width="270px"
+    >
+      <div class="iframe-box" v-loading="loading">
+        <iframe src="https://weread.qq.com/#login" frameborder="0"></iframe>
+      </div>
+      <div class="text-center" v-show="!loading">
+        <el-button
+          type="text"
+          style="color: #999999;"
+          @click="showDialog = false"
+          >取消</el-button
+        >
+        <el-button type="text" @click="GetNotebooklist">我已登录</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, defineEmits, defineProps, computed, PropType} from 'vue'
+import readFile from '@/utils/readFile.js'
+import paresClip from '@/utils/paresClip.js'
 import readSQLite from '@/utils/readSQLite.js'
+import { ref, reactive, computed, PropType, onMounted, watch } from 'vue'
 import { ElLoading, ElMessage } from 'element-plus'
-import { getNotebooklist, getBookMarkList, getReviewList } from '@/utils/weread.js'
+import {
+  getNotebooklist,
+  getBookMarkList,
+  getReviewList
+} from '@/utils/weread.js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 interface Text {
-  text: string,
-  note: string,
-  checked: boolean,
+  text: string
+  note: string
+  checked: boolean
   isEdit: boolean
 }
 interface BookData {
-  title: string,
-  texts: Array<Text>,
-  bookId: [string, number],
-  loaded: boolean
+  title: string
+  texts: Array<Text>
+  bookId?: [string, number]
+  loaded?: boolean
 }
-const $emit = defineEmits(['update-tag', 'parse', 'submit', 'reverse', 'reset', 'list-update'])
+const $emit = defineEmits([
+  'update-tag',
+  'parse',
+  'submit',
+  'reverse',
+  'reset',
+  'list-update'
+])
 const props = defineProps({
   list: {
     type: Array as PropType<Text[]>,
@@ -282,32 +342,37 @@ const options = reactive({
   noEmptyLine: true,
   onlyTag: false
 })
-function selectChange (val:String) {
-  const data = bookList.value.find(i => (i.title === val))
+watch(
+  () => options,
+  computedTag,
+  {deep: true}
+)
+function selectChange (val: String) {
+  const data = bookList.value.find(i => i.title === val)
 
-  if(!data) return false
+  if (!data) return false
 
   if (data.bookId && !data.loaded) {
-    const ReviewList = getReviewList(
-      {
-        bookId: data.bookId,
-        listType: 11,
-        maxIdx: 0,
-        count: 0,
-        listMode: 2,
-        synckey: 0,
-        mine: 1
-      }
-    )
-    const BookMarkList = getBookMarkList(data.bookId)
-    Promise.all([ReviewList, BookMarkList]).then(([reviewList, bookMarkList]) => {
-      data.texts = [...reviewList, ...bookMarkList]
-      data.loaded = true
-      updateData(data)
-    }).catch(e => {
-      console.log(e)
+    const ReviewList = getReviewList({
+      bookId: data.bookId,
+      listType: 11,
+      maxIdx: 0,
+      count: 0,
+      listMode: 2,
+      synckey: 0,
+      mine: 1
     })
-  }else{
+    const BookMarkList = getBookMarkList(data.bookId)
+    Promise.all([ReviewList, BookMarkList])
+      .then(([reviewList, bookMarkList]) => {
+        data.texts = [...reviewList, ...bookMarkList]
+        data.loaded = true
+        updateData(data)
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  } else {
     updateData(data)
   }
 }
@@ -315,33 +380,33 @@ function selectChange (val:String) {
 function handleBooksData (_bookList: Array<BookData>) {
   bookList.value = _bookList.reverse()
   const data = _bookList[0]
-  if(data.bookId) selectChange(data.title)
+  if (data.bookId) selectChange(data.title)
   options.book = data.title
-  activeName.value = '2'
   updateData(data)
 }
 
 function updateData (data: BookData) {
-    const { title, texts, bookId } = data
-    options.title = title
-    $emit('list-update', texts)
-    if (!texts.length && !bookId) {
-      ElMessage.warning('未发现有效内容')
-    } else {
-      parse()
-    }
+  const { title, texts, bookId } = data
+  options.title = title
+  $emit('list-update', texts)
+  if (!texts.length && !bookId) {
+    ElMessage.warning('未发现有效内容')
+  } else {
+    parse()
   }
-  // weread
-  const showDialog = ref(true)
-  const loading = ref(true)
+}
+// weread
+const showDialog = ref(false)
+const loading = ref(false)
 
-function GetNotebooklist(){
-  getNotebooklist().then(res => {
+function GetNotebooklist () {
+  getNotebooklist()
+    .then(res => {
       showDialog.value = false
       loading.value = false
       handleBooksData(res)
     })
-    .catch((err) => {
+    .catch(err => {
       loading.value = false
     })
 }
@@ -374,11 +439,12 @@ function importAppleBooks () {
       loadingInstance.close()
     })
 }
-function parse(){
+function parse () {
+  activeName.value = '2'
   updateOptions()
   $emit('parse', options)
 }
-function submit(){
+function submit () {
   $emit('submit', options.api)
 }
 function reverse () {
@@ -430,25 +496,59 @@ function computedTag () {
   $emit('update-tag', _tag)
   Tag.value = _tag
 }
+function reset () {
+  bookList.value = []
+  $emit('reset')
+}
+function listenFile () {
+  document.querySelector('#fileSelect input')
+    .addEventListener('change', e => {
+      reset()
+        const file = e.target.files[0]
+        const ext = file.name
+          .split('.')
+          .pop()
+          .toLowerCase()
+        const reader = new FileReader()
+        reader.onload = () => {
+          if (ext === 'txt') {
+            bookList.value = paresClip(reader.result)
+            try {
+              const data = bookList.value[0]
+              options.book = data.title
+              updateData(data)
+            } catch (error) {}
+          }
+          if (ext === 'html') {
+            const data = readFile(reader.result)
+            updateData(data)
+          }
+        }
+        reader.readAsText(file)
+    })
+}
+onMounted(() => {
+  listenFile()
+})
 </script>
 
 <style lang="scss" scoped>
-.left-bar{
+.left-bar {
   background-color: #e4f5ef;
   margin-top: -40px;
   padding-top: 40px;
   display: flex;
   flex-direction: column;
   user-select: none;
-  &-form{
+  &-form {
     height: 0px;
     flex: 1;
     overflow: hidden;
     padding-bottom: 10px;
-    ::v-deep .el-form{
+    :deep(.el-form) {
       height: 100%;
-      &-item{
-        &__label{
+      .el-form-item {
+        &__label {
           padding-bottom: 4px;
         }
         &--mini {
@@ -456,11 +556,11 @@ function computedTag () {
         }
       }
     }
-    &-content{
+    &-content {
       display: flex;
       flex-direction: column;
       height: 100%;
-      &-top{
+      &-top {
         .thired-import {
           justify-content: space-between;
           .flex-item {
@@ -469,7 +569,7 @@ function computedTag () {
           }
         }
       }
-      &-body{
+      &-body {
         height: 0;
         flex: 1;
         overflow: auto;
@@ -499,34 +599,44 @@ function computedTag () {
         color: inherit;
       }
     }
-    ::v-deep .el-collapse{
+    :deep(.el-collapse) {
       border: none;
-      .el-collapse-item{
-        &__header{
+      .el-collapse-item {
+        &__header {
           background-color: #e4f5ef;
         }
-        &__content{
+        &__content {
           background-color: #e4f5ef;
           border: none;
           padding-bottom: 10px;
         }
       }
     }
-    .book-list{
-      ::v-deep .el-radio{
-        background-color: #fff;
-        width: 100%;
-        margin: 0 0 10px 0;
-        &__input{
-          display: none;
+    .list-wrap{
+      max-height: calc(100vh - 446px);
+      overflow: scroll;
+      margin-bottom: -16px;
+      .book-list {
+        :deep(.el-radio) {
+          background-color: #fff;
+          width: 100%;
+          margin: 0 0 10px 0;
+          .el-radio__label{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+          }
+          .el-radio__input {
+            display: none;
+          }
         }
-      }
-      ::v-deep .el-radio.is-bordered + .el-radio.is-bordered{
-        margin-left: 0px;
+        :deep(.el-radio.is-bordered + .el-radio.is-bordered) {
+          margin-left: 0px;
+        }
       }
     }
   }
-  &-bottom{
+  &-bottom {
     text-align: center;
     padding-top: 10px;
     box-shadow: 0 -10px 10px -16px rgba($color: #000000, $alpha: 0.4);

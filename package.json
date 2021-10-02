@@ -1,21 +1,24 @@
 {
   "name": "send2flomo",
-  "version": "0.1.0",
+  "version": "1.9.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "electron:build": "vue-cli-service electron:build",
+    "release": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
   "dependencies": {
+    "@electron/remote": "^2.0.1",
     "axios": "^0.21.4",
     "bplist-parser": "^0.3.0",
     "cheerio": "^1.0.0-rc.10",
     "core-js": "^3.6.5",
+    "electron-updater": "^4.3.9",
     "element-plus": "^1.1.0-beta.18",
     "sqlite3": "^5.0.2",
     "vue": "^3.0.0",

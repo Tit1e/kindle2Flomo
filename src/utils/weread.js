@@ -1,7 +1,7 @@
 import { get_bookshelf, get_bookmarklist, get_reviewlist, get_notebooklist } from '@/utils/wereadRequest.js'
 
-function clearCookies(){
-  const { session } = require('electron').remote
+function clearCookies() {
+  const {session} = require('@electron/remote')
   return new Promise((r, j) => {
     session.defaultSession.cookies.get({ url: 'https://weread.qq.com/' }).then(res => {
       try {
