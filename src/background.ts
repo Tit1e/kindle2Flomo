@@ -2,7 +2,7 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
-import checkUpdate from './utils/checkUpdate.js'
+import checkUpdate from './utils/checkUpdate'
 const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
 const isDevelopment = process.env.NODE_ENV !== 'production'

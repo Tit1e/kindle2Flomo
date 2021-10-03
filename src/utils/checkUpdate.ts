@@ -1,3 +1,4 @@
+const { app, dialog, shell } = require('electron')
 const { autoUpdater } = require('electron-updater')
 export default function checkUpdate () {
   //检测更新
@@ -9,7 +10,8 @@ export default function checkUpdate () {
   })
 
   //监听'update-available'事件，发现有新版本时触发
-  autoUpdater.on('update-available', () => {
+  autoUpdater.on('update-available', res => {
+    console.log(res)
     console.log('found new version')
   })
 
@@ -22,11 +24,12 @@ export default function checkUpdate () {
         type: 'info',
         title: '应用更新',
         message: '发现新版本，是否更新？',
-        buttons: ['是', '否']
+        buttons: ['更新', '取消']
       })
       .then(buttonIndex => {
         if (buttonIndex.response == 0) {
           //选择是，则退出程序，安装新版本
+          // shell.openExternal(this.href)
           autoUpdater.quitAndInstall()
           app.quit()
         }
