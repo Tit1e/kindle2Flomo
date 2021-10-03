@@ -3,15 +3,20 @@ axios.defaults.baseURL = 'https://i.weread.qq.com'
 
 function getUserVid() {
   return new Promise((r, j) => {
-    const { session } = require('electron').remote
-    session.defaultSession.cookies.get({ url: 'https://weread.qq.com/' }).then(res => {
-      if (res && res.length) {
-        const vid = res.find(i => i.name === 'wr_vid')
-        if (vid) r(vid.value)
+    try {
+      const { session } = require('@electron/remote')
+      session.defaultSession.cookies.get({ url: 'https://weread.qq.com/' }).then(res => {
+        if (res && res.length) {
+          const vid = res.find(i => i.name === 'wr_vid')
+          if (vid) r(vid.value)
+          j(false)
+        }
         j(false)
-      }
+      })
+    } catch (error) {
+      console.log(error)
       j(false)
-    })
+    }
   })
 }
 
@@ -81,7 +86,7 @@ export const get_bestbookmarks = bookId => {
 }
 // 获取书架上的书籍列表
 export const get_bookshelf = async () => {
-  const userVid = await getUserVid()
+  const userVid = await getUserVid().catch(e => {})
   return axios({
     method: 'get',
     url: '/shelf/friendCommon',
@@ -93,7 +98,9 @@ export const get_bookshelf = async () => {
 }
 // 获取你的所有有笔记本书单
 export const get_notebooklist = async () => {
-  const userVid = await getUserVid().catch(e => {})
+  const userVid = await getUserVid().catch(e => {
+    console.log(e)
+  })
   if (!userVid) {
     return Promise.reject(401)
   }
@@ -117,7 +124,7 @@ export const get_bookinfo = bookId => {
 
 // 获取某本书的批注
 export const get_reviewlist = async (params) => {
-  const userVid = await getUserVid()
+  const userVid = await getUserVid().catch(e => {})
   return axios({
     method: 'get',
     url: '/web/review/list',

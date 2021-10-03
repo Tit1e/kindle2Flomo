@@ -3,6 +3,10 @@ module.exports = {
   // 第三方插件配置
   pluginOptions: {
     electronBuilder: {
+      publish: ['github'],
+      electronDownload: {
+        mirror: "https://npm.taobao.org/mirrors/electron/"
+      },
       productName: 'SendToFlomo',
       nodeIntegration: true,
       builderOptions: {

@@ -23,7 +23,7 @@
                 <div class="upload-content radius flex pd-10 border">
                   <i class="el-icon-folder-add"></i>
                   <div class="el-upload__text">
-                    选择 HTML / TXT 文件
+                    {{t('upload-file')}}
                   </div>
                 </div>
               </el-upload>
@@ -112,7 +112,7 @@
                     <i class="el-icon-set-up mr-4"></i>{{ t('parse-options') }}
                   </div>
                 </template>
-                <el-divider>Api 设置</el-divider>
+                <el-divider>{{t('api-options')}}</el-divider>
                 <el-form-item label="" label-width="0px">
                   <el-input
                     v-model="options.api"
@@ -121,7 +121,7 @@
                     placeholder="API 采用本地存储"
                   ></el-input>
                 </el-form-item>
-                <el-divider>Tag 设置</el-divider>
+                <el-divider>{{t('tag-options')}}</el-divider>
                 <el-form-item label="Tag">
                   <div class="flex">
                     <div class="flex-1">
@@ -165,7 +165,7 @@
                     </div>
                   </div>
                 </el-form-item>
-                <el-divider>笔记设置</el-divider>
+                <el-divider>{{t('notes-options')}}</el-divider>
                 <el-form-item label="位置">
                   <el-radio-group v-model="options.notePosition">
                       <el-radio-button :label="true">摘录上方</el-radio-button>
@@ -186,13 +186,13 @@
               </el-collapse-item>
               <el-collapse-item name="2">
                 <template #title>
-                  <div><i class="el-icon-notebook-2 mr-4"></i>书籍列表</div>
+                  <div><i class="el-icon-notebook-2 mr-4"></i>{{t('book-list')}}</div>
                 </template>
                 <template v-if="bookList.length">
-                  <el-form-item label="书名">
+                  <el-form-item :label="t('book-name')">
                     <el-input v-model="options.title"></el-input>
                   </el-form-item>
-                  <el-form-item label="书籍列表" label-width="0">
+                  <el-form-item :label="t('book-list')" label-width="0">
                     <div class="list-wrap">
                       <el-radio-group
                         class="book-list"
@@ -217,13 +217,6 @@
       </el-form>
     </div>
     <div class="left-bar-bottom">
-      <!-- <el-button
-        type="primary"
-        size="mini"
-        :disabled="!tmpList.length"
-        @click="parse"
-        >{{ t('parse') }}</el-button
-      > -->
       <template v-if="disabledSend">
         <el-tooltip
           effect="dark"
@@ -233,14 +226,14 @@
         >
           <span style="margin-left: 10px;">
             <el-button type="primary" :disabled="disabledSend" size="mini"
-              >导入 Flomo</el-button
+              >{{t('import')}}</el-button
             >
           </span>
         </el-tooltip>
       </template>
       <template v-else>
         <el-button type="primary" size="mini" @click="submit"
-          >导入 Flomo</el-button
+          >{{t('import')}}</el-button
         >
       </template>
     </div>
@@ -254,7 +247,7 @@
       width="270px"
     >
       <div class="iframe-box" v-loading="loading">
-        <iframe src="https://weread.qq.com/#login" frameborder="0"></iframe>
+        <iframe v-if="showDialog" src="https://weread.qq.com/#login" frameborder="0"></iframe>
       </div>
       <div class="text-center" v-show="!loading">
         <el-button
@@ -416,9 +409,9 @@ function GetNotebooklist () {
     })
 }
 function importWeRead () {
-  loading.value = true
   showDialog.value = true
-  GetNotebooklist()
+  loading.value = true
+  setTimeout(GetNotebooklist, 300)
 }
 
 // Apple Books
@@ -426,7 +419,7 @@ function importAppleBooks () {
   const loadingInstance = ElLoading.service({
     body: true,
     lock: true,
-    text: '正在读取笔记'
+    text: t('reading-notes')
   })
   readSQLite()
     .then(res => {

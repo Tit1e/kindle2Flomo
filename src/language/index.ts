@@ -35,9 +35,10 @@ function getLangFiles(mList: any, msg: any) {
 }
 
 //注册i8n实例并引入语言文件
+const locale = window.localStorage.getItem('locale') || 'zh-CN'
 const i18n = createI18n({
   legacy: false,
-  locale: 'zh-CN',
+  locale: locale,
   messages: getLangAll()
 })
 

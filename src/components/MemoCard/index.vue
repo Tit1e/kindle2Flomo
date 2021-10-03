@@ -1,19 +1,7 @@
 <template>
-  <div class="memo-card radius" :class="{active: checked, empty: isEmpty}" @click="toggleChecked">
-    <div class="priview" @dblclick="handleEdit(content)">
-      <template v-if="isEdit">
-        <el-input
-          v-model="content"
-          @click.stop
-          type="textarea"
-          autosize
-          :rows="5"
-        ></el-input>
-        <div class="pt-10 text-right">
-          <el-button type="primary" size="mini" @click.stop="submit">完成</el-button>
-        </div>
-      </template>
-      <pre v-else>{{ content }}</pre>
+  <div class="memo-card radius" :class="{active: props.info.checked, empty: props.info.isEmpty, highlight: props.info.send}" @click="toggleChecked">
+    <div class="priview">
+      <pre v-html="props.info._text"></pre>
     </div>
   </div>
 </template>
@@ -31,10 +19,12 @@ const props = defineProps({
     default: 0
   }
 })
+const info = props.info
 const $emit = defineEmits(['update:edit', 'update:check', 'update:input', 'open'])
 let content = toRef(props.info,'text')
 let checked = toRef(props.info, 'checked')
 let isEdit = toRef(props.info, 'isEdit')
+let send = toRef(props.info, 'send')
 const isEmpty = toRef(props.info, 'isEmpty')
 watch(
   () => props.info,
@@ -57,26 +47,21 @@ watch(
   },
   {deep: true}
 )
-
+let timer = null
+let clicking = false
 function toggleChecked(){
-  checked.value = !checked.value
-}
-
-function handleEdit (content) {
-  // $emit('update:edit', true)
-  // $emit('open')
-  // ElMessageBox.prompt('', '编辑 Memo', {
-  //       confirmButtonText: '完成',
-  //       cancelButtonText: '取消',
-  //       inputValue: content,
-  //       inputType: 'textarea'
-  //     })
-  //       .then(({ value }) => {
-  //         $emit('update:input', value)
-  //       })
-  //       .catch(() => {
-
-  //       })
+  if(timer) {
+    clicking = true
+    clearTimeout(timer)
+  }
+  timer = setTimeout(() => {
+    if(!clicking){
+      checked.value = !checked.value
+    }
+    clearTimeout(timer)
+    clicking = false
+    timer = null
+  }, 200)
 }
 function submit () {
   $emit('update:edit', false)
@@ -95,7 +80,8 @@ function submit () {
     cursor: pointer;
   }
   &.active{
-    background-color: #9debd0;
+    background-color: #55bb8e;
+    color: #fff!important;
   }
   &.empty{
     opacity: 0!important;
@@ -116,6 +102,15 @@ function submit () {
       word-wrap: break-word;
       margin: 0;
       line-height: 1.8;
+    }
+    :deep(._tag) {
+      color: #5783f7;
+      cursor: pointer;
+      background-color: #eef3fe;
+      padding: 4px;
+      font-size: 12px;
+      border-radius: 3px;
+      display: inline-block;
     }
   }
 }

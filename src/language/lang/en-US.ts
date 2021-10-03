@@ -7,5 +7,13 @@ export default  {
   'hide-tag': 'Hide Tag',
   'position-of-tag': 'Position Of Tag',
   'top': 'Top',
-  'bottom': 'Bottom'
+  'bottom': 'Bottom',
+  'book-name': 'Book Name',
+  'book-list': 'Book List',
+  'import': 'Import',
+  'api-options': 'Api Options',
+  'tag-options': 'Tag Options',
+  'notes-options': 'Notes Options',
+  'reading-notes': 'reading',
+  'upload-file': 'Upload HTML/TXT'
 }

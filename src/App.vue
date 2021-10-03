@@ -1,6 +1,6 @@
 <template>
   <the-head class="the-head" />
-  <div class="content-wrap">
+  <div class="content-wrap" v-loading="loading" :element-loading-text="loadingText">
     <left-bar
       class="left-bar"
       :list="contentList"
@@ -11,7 +11,7 @@
       @update-tag="updateTag"
       @reset="reset"
     />
-    <right-content class="right-content" :content-list="contentList" />
+    <right-content class="right-content" :import-count="importCount" :content-list="contentList" />
   </div>
 </template>
 
@@ -19,8 +19,9 @@
 import TheHead from '@/components/TheHead'
 import LeftBar from '@/components/LeftBar'
 import RightContent from '@/components/RightContent'
-import { ref, toRefs, toRef, reactive, computed, nextTick } from 'vue'
-import { ElMessageBox } from 'element-plus'
+import { ref, toRefs, toRef, reactive, computed, nextTick, watch } from 'vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
+import addMemo from '@/utils/addMemo'
 interface Text {
   text: string
   note: string
@@ -35,12 +36,66 @@ const checkedMemo = computed<Array<Text>>(() =>
 )
 let loading = ref(false)
 let index = ref(0)
+const importCount = ref(0)
+function setDate () {
+  const D = new Date()
+  const y = D.getFullYear()
+  const m = D.getMonth() + 1
+  const d = D.getDate()
+  return `${y}${m}${d}`
+}
+const date = setDate()
+function geImportCount (date: string) {
+  let Obj = JSON.parse(localStorage.getItem('importCount') || '{}')
+  importCount.value = +Obj[date] || 0
+}
+geImportCount(date)
+
+watch(
+  () => importCount,
+  val => {
+    localStorage.setItem(
+        'importCount',
+        JSON.stringify({
+          [date]: val.value
+        })
+      )
+  },
+  {deep: true}
+)
+const loadingText = computed(() => {
+  return `为减轻服务器压力，导入间隔为 1s。导入进度： ${index.value + 1}/${
+    checkedMemo.value.length
+  }`
+})
+
 function submit (url: string = '') {
   loading.value = true
   index.value = 0
-  // sendMemo(url, checkedMemo, index)
+  sendMemo(url, checkedMemo.value, index.value)
 }
-function sendMemo () {}
+function sendMemo (url, list, _index) {
+  const item = list[_index]
+  const findIndex = contentList.value.findIndex(i => i.text === item.text)
+  addMemo(url, item.text).then(res => {
+    importCount.value += 1
+    contentList.value.splice(findIndex, 1, {...item, send: true, checked: false})
+    if (_index < list.length - 1) {
+      setTimeout(() => {
+        index.value += 1
+        sendMemo(url, list, index.value)
+      }, 1000)
+    } else {
+      ElMessage.success('导入完毕')
+      loading.value = false
+    }
+  })
+  .catch(e => {
+    console.error(e)
+    loading.value = false
+    ElMessage.error('导入失败')
+  })
+}
 function confirmCanEdit (options) {
   const canEdit = localStorage.getItem('canEdit') || '0'
   if (canEdit === '0') {
@@ -53,6 +108,21 @@ function confirmCanEdit (options) {
     })
   }
 }
+function handleTag(options, tag, text){
+      const {noTag, tagPosition, noEmptyLine, onlyTag} = options
+      let _text = text
+      if(!noTag) {
+        // tag 位置在上方
+        if(tagPosition){
+          // 在上方时空行加在 tag 后
+          _text = (onlyTag ? `${tag}\r\n\r\n` : (noEmptyLine ? `${tag}\r\n` : `${tag}\r\n\r\n`)) + _text
+        }else{
+          // 在上方时空行加在 tag 前
+          _text = _text + (onlyTag ? `\r\n${tag}` : (noEmptyLine ? tag : `\r\n${tag}`))
+        }
+      }
+      return _text
+    }
 async function parse (options) {
   const {
     split,
@@ -63,6 +133,8 @@ async function parse (options) {
     noTag
   } = options
   contentList.value = []
+  // 渲染用的tag
+  const _tag = `<div class="_tag">${tag.value}</div>`
   await nextTick()
   contentList.value = JSON.parse(JSON.stringify(tmpList.value)).map(i => {
     const _text = `${i.text}\r\n`
@@ -72,23 +144,9 @@ async function parse (options) {
     // 如果笔记在摘录上方
     if (notePosition) textArr.reverse()
     let text = textArr.filter(i => i).join(noEmptyLine ? '' : '\r\n')
-    if (!noTag) {
-      // tag 位置在上方
-      if (tagPosition) {
-        // 在上方时空行加在 tag 后
-        text =
-          (onlyTag
-            ? `${tag.value}\r\n\r\n`
-            : noEmptyLine
-            ? `${tag.value}\r\n`
-            : `${tag.value}\r\n\r\n`) + text
-      } else {
-        // 在上方时空行加在 tag 前
-        text =
-          text + (onlyTag ? `\r\n${tag.value}` : noEmptyLine ? tag.value : `\r\n${tag.value}`)
-      }
-    }
-    i.text = text
+    i.text = handleTag(options, tag.value, text)
+    i._text = handleTag(options, _tag, text)
+    i.send = false
     return i
   })
   confirmCanEdit(options)

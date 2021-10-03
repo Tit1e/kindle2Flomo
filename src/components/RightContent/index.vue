@@ -46,6 +46,10 @@ const props = defineProps({
   contentList: {
     type: Array,
     default: () => []
+  },
+  importCount: {
+    type: Number,
+    default: 0
   }
 })
 
@@ -100,20 +104,7 @@ watch(
 )
 const checkedMemo = computed(() => contentList.value.filter(i => i.checked))
 const disabled = computed(() => checkedMemo.value.length >= 100)
-const importCount = ref(0)
-function setDate () {
-  const D = new Date()
-  const y = D.getFullYear()
-  const m = D.getMonth() + 1
-  const d = D.getDate()
-  return `${y}${m}${d}`
-}
-const date = setDate()
-function geImportCount (date: string) {
-  let Obj = JSON.parse(localStorage.getItem('importCount') || '{}')
-  importCount.value = +Obj[date] || 0
-}
-geImportCount(date)
+
 
 const dialogVisible = ref(false)
 const activeItem = ref({})

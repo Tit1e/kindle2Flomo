@@ -41,6 +41,7 @@ import { useI18n } from 'vue-i18n'
 const { t, locale } = useI18n()
 function toggleLanguage () {
   locale.value = locale.value === 'zh-CN' ? 'en-US' : 'zh-CN'
+  window.localStorage.setItem('locale', locale.value)
 }
 
 const props = defineProps({
