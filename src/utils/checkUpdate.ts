@@ -30,8 +30,8 @@ export default function checkUpdate () {
         if (buttonIndex.response == 0) {
           //选择是，则退出程序，安装新版本
           // shell.openExternal(this.href)
-          autoUpdater.quitAndInstall()
-          app.quit()
+          autoUpdater.quitAndInstall(true, true)
+          // app.quit()
         }
       })
   })

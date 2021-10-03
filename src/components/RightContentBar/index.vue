@@ -1,7 +1,6 @@
 <template>
   <div class="right-content-bar">
     <div class="flex-1 flex">
-      test
       已选择 <span class="highlight">{{ selected }}</span> 条 MEMO，共
       <span class="highlight">{{ total }}</span> 条。今天已导入
       <span class="highlight">{{ importCount }} / 100</span> 条 MEMO

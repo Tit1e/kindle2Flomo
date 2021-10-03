@@ -3,7 +3,15 @@ module.exports = {
   // 第三方插件配置
   pluginOptions: {
     electronBuilder: {
-      publish: ['github'],
+      // publish: ['github'],
+      publish: {
+          provider: 'github',
+          repo: 'kindle2Flomo', // git仓库
+          owner: 'Tit1e', // 拥有者
+          releaseType: 'release',
+          vPrefixedTagName: false,
+          publishAutoUpdate: true // 发布自动更新（需要配置GH_TOKEN）。 默认true
+      },
       electronDownload: {
         mirror: "https://npm.taobao.org/mirrors/electron/"
       },
