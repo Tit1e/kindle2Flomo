@@ -10,23 +10,37 @@
     <div class="content-box">
       <div class="memo-box" :style="{height: boxHeight}">
         <memo-card
+          @dblclick.native.stop="showDialog(item)"
           v-for="(item, index) in contentList"
           class="memo-item"
-          :input.sync="item.text"
+          v-model:input="item.text"
           v-model:check="item.checked"
-          :edit.sync="item.isEdit"
+          v-model:edit="item.isEdit"
           :info="item"
           :index="index"
         />
       </div>
     </div>
+    <el-dialog
+      v-model="dialogVisible"
+      center
+      title="编辑 MEMO"
+      width="600px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-input v-model="activeItem.text" type="textarea" :autosize="{ minRows: 6 }" placeholder="" clearable></el-input>
+      <template #footer>
+          <el-button @click="closeDialog" size="mini" type="primary">完成</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import RightContentBar from '@/components/RightContentBar'
 import MemoCard from '@/components/MemoCard'
-import { nextTick, watch, ref, computed } from 'vue'
+import { nextTick, watch, ref, computed, onMounted } from 'vue'
 
 const props = defineProps({
   contentList: {
@@ -51,17 +65,40 @@ async function computedHeight(){
   }
   boxHeight.value = `${maxHeight}px`
 }
+function addListener(){
+  let timer = null
+  window.addEventListener('resize', e => {
+    if(timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      computedHeight()
+      clearTimeout(timer)
+      timer = null
+    }, 500)
+  })
+}
+onMounted(() => {
+  addListener()
+})
 const contentList = ref(props.contentList)
 watch(
   () => props.contentList,
   val => {
     contentList.value = [...val]
+    if(val.length === 2){
+      const empty = {
+        text: '',
+        note: '',
+        isEdit: false,
+        checked: false,
+        isEmpty: true
+      }
+      contentList.value.push(empty)
+    }
     computedHeight()
   },
   { deep: true }
 )
 const checkedMemo = computed(() => contentList.value.filter(i => i.checked))
-console.log(checkedMemo)
 const disabled = computed(() => checkedMemo.value.length >= 100)
 const importCount = ref(0)
 function setDate () {
@@ -77,6 +114,17 @@ function geImportCount (date: string) {
   importCount.value = +Obj[date] || 0
 }
 geImportCount(date)
+
+const dialogVisible = ref(false)
+const activeItem = ref({})
+function showDialog (item){
+  activeItem.value = item
+  dialogVisible.value = true
+}
+function closeDialog(){
+  activeItem.value = {}
+  dialogVisible.value = false
+}
 
 </script>
 

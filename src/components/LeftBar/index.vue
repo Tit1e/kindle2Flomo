@@ -4,7 +4,6 @@
       <el-form
         :model="options"
         ref="form"
-        label-width="80px"
         size="mini"
         label-suffix="："
         label-position="top"
@@ -106,14 +105,15 @@
             </el-form-item>
           </div>
           <div class="left-bar-form-content-body">
-            <el-collapse v-model="activeName" accordion>
+            <el-collapse v-model="options.activeName" accordion>
               <el-collapse-item name="1">
                 <template #title>
                   <div>
                     <i class="el-icon-set-up mr-4"></i>{{ t('parse-options') }}
                   </div>
                 </template>
-                <el-form-item label="Api">
+                <el-divider>Api 设置</el-divider>
+                <el-form-item label="" label-width="0px">
                   <el-input
                     v-model="options.api"
                     type="password"
@@ -121,12 +121,14 @@
                     placeholder="API 采用本地存储"
                   ></el-input>
                 </el-form-item>
+                <el-divider>Tag 设置</el-divider>
                 <el-form-item label="Tag">
                   <div class="flex">
                     <div class="flex-1">
                       <el-input
                         v-model="options.tag"
                         :disabled="options.noTag"
+                        placeholder="Tag 名称"
                         clearable
                       ></el-input>
                     </div>
@@ -139,34 +141,13 @@
                 </el-form-item>
                 <template v-if="!options.noTag">
                   <el-form-item :label="t('position-of-tag')">
-                    <el-switch
-                      v-model="options.tagPosition"
-                      :active-text="t('top')"
-                      :inactive-text="t('bottom')"
-                    >
-                    </el-switch>
+                    <el-radio-group v-model="options.tagPosition">
+                      <el-radio-button :label="true">{{t('top')}}</el-radio-button>
+                      <el-radio-button :label="false">{{t('bottom')}}</el-radio-button>
+                    </el-radio-group>
                   </el-form-item>
                 </template>
-                <el-form-item label="笔记位置">
-                  <el-switch
-                    v-model="options.notePosition"
-                    active-text="摘录上方"
-                    inactive-text="摘录下方"
-                  >
-                  </el-switch>
-                </el-form-item>
-                <el-form-item label="分隔符">
-                  <el-input
-                    v-model="options.split"
-                    placeholder="为空以空行填充，此空行无法禁用"
-                    clearable
-                  ></el-input>
-                  <span class="fz-12"
-                    ><b class="highlight">仅在有笔记时生效</b
-                    >，且总在笔记与摘录之间</span
-                  >
-                </el-form-item>
-                <el-form-item label="空行设置">
+                <el-form-item label="空行">
                   <div class="flex">
                     <div class="flex-1 pl-10">
                       <el-checkbox
@@ -184,14 +165,23 @@
                     </div>
                   </div>
                 </el-form-item>
-                <el-form-item label="列表顺序">
-                  <el-switch
-                    v-model="options.reverse"
-                    active-text="倒序"
-                    inactive-text="顺序"
-                    @change="reverse"
+                <el-divider>笔记设置</el-divider>
+                <el-form-item label="位置">
+                  <el-radio-group v-model="options.notePosition">
+                      <el-radio-button :label="true">摘录上方</el-radio-button>
+                      <el-radio-button :label="false">摘录下方</el-radio-button>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="分隔符">
+                  <el-input
+                    v-model="options.split"
+                    placeholder="为空以空行填充，此空行无法禁用"
+                    clearable
+                  ></el-input>
+                  <span class="fz-12"
+                    ><b class="highlight">仅在有笔记时生效</b
+                    >，且总在笔记与摘录之间</span
                   >
-                  </el-switch>
                 </el-form-item>
               </el-collapse-item>
               <el-collapse-item name="2">
@@ -227,13 +217,13 @@
       </el-form>
     </div>
     <div class="left-bar-bottom">
-      <el-button
+      <!-- <el-button
         type="primary"
         size="mini"
         :disabled="!tmpList.length"
         @click="parse"
         >{{ t('parse') }}</el-button
-      >
+      > -->
       <template v-if="disabledSend">
         <el-tooltip
           effect="dark"
@@ -309,7 +299,6 @@ const $emit = defineEmits([
   'update-tag',
   'parse',
   'submit',
-  'reverse',
   'reset',
   'list-update'
 ])
@@ -323,28 +312,44 @@ const props = defineProps({
     default: () => []
   }
 })
+
+
 const checkedMemo = computed(() => props.list.filter(i => i.checked))
 const disabledSend = computed(() => !checkedMemo.value.length || !options.api)
 const isElectron = ref(!!process.env.IS_ELECTRON)
-const activeName = ref('1')
 const bookList = ref<Array<BookData>>([])
-const options = reactive({
+let options = reactive({
+  activeName: '1',
   book: '',
   title: '',
   split: '',
   tag: 'kindle',
   api: '',
   noTag: false,
-  reverse: false,
   // false 底部，true 顶部
   tagPosition: false,
   notePosition: false,
   noEmptyLine: true,
   onlyTag: false
 })
+
+function setOptions () {
+  const _options = JSON.parse(localStorage.getItem('options') || '{}')
+  options = reactive({
+    ...options,
+    ..._options
+  })
+}
+
+setOptions()
+
+
 watch(
   () => options,
-  computedTag,
+  () => {
+    computedTag()
+    parse()
+  },
   {deep: true}
 )
 function selectChange (val: String) {
@@ -392,7 +397,7 @@ function updateData (data: BookData) {
   if (!texts.length && !bookId) {
     ElMessage.warning('未发现有效内容')
   } else {
-    parse()
+    parse(true)
   }
 }
 // weread
@@ -439,16 +444,15 @@ function importAppleBooks () {
       loadingInstance.close()
     })
 }
-function parse () {
-  activeName.value = '2'
+function parse (showBookList: boolean = false) {
+  if(showBookList){
+    options.activeName = '2'
+  }
   updateOptions()
   $emit('parse', options)
 }
 function submit () {
   $emit('submit', options.api)
-}
-function reverse () {
-  $emit('reverse')
 }
 function onlyTagChange (val: Boolean) {
   // 只在 tag 前后时，禁用空行
@@ -463,9 +467,9 @@ function updateOptions () {
     tag,
     split,
     tagPosition,
-    reverse,
     noEmptyLine,
-    onlyTag
+    onlyTag,
+    activeName
   } = options
   const optionsData = {
     noTag,
@@ -473,9 +477,9 @@ function updateOptions () {
     tag,
     split,
     tagPosition,
-    reverse,
     noEmptyLine,
-    onlyTag
+    onlyTag,
+    activeName
   }
   localStorage.setItem('options', JSON.stringify(optionsData))
 }
@@ -599,9 +603,17 @@ onMounted(() => {
         color: inherit;
       }
     }
+    :deep(.el-divider){
+      .el-divider__text{
+        background-color: #e4f5ef;
+      }
+    }
     :deep(.el-collapse) {
       border: none;
       .el-collapse-item {
+        &__wrap{
+          background-color: #e4f5ef;
+        }
         &__header {
           background-color: #e4f5ef;
         }

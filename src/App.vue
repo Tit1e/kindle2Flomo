@@ -7,7 +7,6 @@
       :tmp-list="tmpList"
       @submit="submit"
       @parse="confirmFirstParse"
-      @reverse="reverseList"
       @list-update="listUpdate"
       @update-tag="updateTag"
       @reset="reset"
@@ -112,9 +111,7 @@ function confirmFirstParse (options) {
     parse(options)
   }
 }
-function reverseList () {
-  contentList.value.reverse()
-}
+
 function listUpdate (list) {
   tmpList.value = list
 }
