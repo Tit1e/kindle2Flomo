@@ -1,17 +1,14 @@
 <template>
-  <div class="right-content">
+  <div class="right-content" :class="{electron: isElectron}">
     <right-content-bar
-      class="right-content-bar"
-      :selected="checkedMemo.length"
-      :total="contentList.length"
-      :import-count="importCount"
-      :disabled="disabled"
+      :class="{'right-content-position': isElectron}"
     />
     <div class="content-box">
       <div class="memo-box" :style="{height: boxHeight}">
         <memo-card
           @dblclick.native.stop="showDialog(item)"
           v-for="(item, index) in contentList"
+          :key="item.text"
           class="memo-item"
           v-model:input="item.text"
           v-model:check="item.checked"
@@ -41,17 +38,10 @@
 import RightContentBar from '@/components/RightContentBar'
 import MemoCard from '@/components/MemoCard'
 import { nextTick, watch, ref, computed, onMounted } from 'vue'
+import {useStore} from 'vuex'
 
-const props = defineProps({
-  contentList: {
-    type: Array,
-    default: () => []
-  },
-  importCount: {
-    type: Number,
-    default: 0
-  }
-})
+const store = useStore()
+const isElectron = store.getters.isElectron
 
 const boxHeight = ref('1000000px')
 async function computedHeight(){
@@ -83,27 +73,27 @@ function addListener(){
 onMounted(() => {
   addListener()
 })
-const contentList = ref(props.contentList)
-watch(
-  () => props.contentList,
-  val => {
-    contentList.value = [...val]
-    if(val.length === 2){
-      const empty = {
-        text: '',
-        note: '',
-        isEdit: false,
-        checked: false,
-        isEmpty: true
-      }
-      contentList.value.push(empty)
+const contentList = computed(() => {
+  const contentList = store.getters.textList
+  if(contentList.length === 2){
+    const empty = {
+      text: '',
+      note: '',
+      isEdit: false,
+      checked: false,
+      isEmpty: true
     }
+    return [...contentList, empty]
+  }
+  return contentList
+})
+watch(
+  () => contentList,
+  val => {
     computedHeight()
   },
   { deep: true }
 )
-const checkedMemo = computed(() => contentList.value.filter(i => i.checked))
-const disabled = computed(() => checkedMemo.value.length >= 100)
 
 
 const dialogVisible = ref(false)
@@ -121,12 +111,14 @@ function closeDialog(){
 
 <style lang="scss" scoped>
 .right-content {
-  margin-top: -40px;
-  padding-top: 40px;
   position: relative;
   display: flex;
   flex-direction: column;
-  &-bar {
+  &.electron{
+    margin-top: -40px;
+    padding-top: 40px;
+  }
+  &-position {
     position: absolute;
     margin-top: -40px;
   }

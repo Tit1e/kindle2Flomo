@@ -15,5 +15,11 @@ export default  {
   'tag-options': 'Tag 设置',
   'notes-options': '笔记设置',
   'reading-notes': '正在读取',
-  'upload-file': '上传 HTML/TXT 文件'
+  'upload-file': '上传 HTML/TXT 文件',
+  'thanks': '感谢 lupeng',
+  'all': '全选',
+  'check-update': '检查更新',
+  'blog': '博客',
+  'jike': '即刻',
+  'help': '帮助'
 }

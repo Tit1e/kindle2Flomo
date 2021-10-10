@@ -1,5 +1,5 @@
 <template>
-  <div class="left-bar pd-10">
+  <div class="left-bar" :class="{'pt-10': !isElectron, electron: isElectron}">
     <div class="left-bar-form">
       <el-form
         :model="options"
@@ -74,23 +74,23 @@
                       由于 Apple Books
                       与微信读书笔记的笔记读取方式限制，只能通过安装应用读取。
                       <br />
-                      <span style="color:#d96767;"
-                        >下载文件夹下版本号最新的安装包</span
-                      >
-                      <br />
-                      文件访问密码：47if
-                      <br />
                       或者去
                       <a
                         style="color:#d96767;"
                         href="https://github.com/Tit1e/kindle2Flomo/releases"
                         target="_blank"
-                        >GitHub</a
+                        >蓝奏云</a
                       >
                       下载
+                      <br />
+                      <span style="color:#d96767;"
+                        >注意下载版本号最新的安装包</span
+                      >
+                      <br />
+                      文件访问密码：47if
                     </div>
                   </template>
-                  <a href="https://wwr.lanzoui.com/b02c3nkyf" target="_blank">
+                  <a href="https://github.com/Tit1e/kindle2Flomo/releases" target="_blank">
                     从 Apple Books / 微信读书 导入
                   </a>
                 </el-tooltip>
@@ -100,12 +100,12 @@
                 href="https://evolly.one/2021/05/30/158-mac-handle-bad-app/"
                 target="_blank"
               >
-                Kindle2Flomo.app 打不开？
+                Send2Flomo.app 打不开？
               </a>
             </el-form-item>
           </div>
           <div class="left-bar-form-content-body">
-            <el-collapse v-model="options.activeName" accordion>
+            <el-collapse v-model="activeName" accordion>
               <el-collapse-item name="1">
                 <template #title>
                   <div>
@@ -221,7 +221,7 @@
         <el-tooltip
           effect="dark"
           :disabled="false"
-          content="请确保 API 已填写，需要导入的 MEMO 已勾选"
+          :content="importDisabled ? '导入数量已达 100 条限额' : '请确保 API 已填写，需要导入的 MEMO 已勾选'"
           placement="top"
         >
           <span style="margin-left: 10px;">
@@ -274,6 +274,7 @@ import {
   getReviewList
 } from '@/utils/weread.js'
 import { useI18n } from 'vue-i18n'
+import {useStore} from 'vuex'
 
 const { t } = useI18n()
 interface Text {
@@ -295,24 +296,13 @@ const $emit = defineEmits([
   'reset',
   'list-update'
 ])
-const props = defineProps({
-  list: {
-    type: Array as PropType<Text[]>,
-    default: () => []
-  },
-  tmpList: {
-    type: Array as PropType<Text[]>,
-    default: () => []
-  }
-})
+const store = useStore()
+const selectedList = computed(() => store.getters.selectedList)
+const importDisabled = computed(() => store.getters.importCount >= 100)
 
-
-const checkedMemo = computed(() => props.list.filter(i => i.checked))
-const disabledSend = computed(() => !checkedMemo.value.length || !options.api)
-const isElectron = ref(!!process.env.IS_ELECTRON)
+const isElectron = store.getters.isElectron
 const bookList = ref<Array<BookData>>([])
 let options = reactive({
-  activeName: '1',
   book: '',
   title: '',
   split: '',
@@ -326,16 +316,27 @@ let options = reactive({
   onlyTag: false
 })
 
+let activeName = ref('1')
+
+watch(
+  () => activeName.value,
+  val => {
+    window.localStorage.setItem('activeName', val)
+  }
+)
+
+const disabledSend = computed(() => !selectedList.value.length || !options.api || importDisabled.value)
+
 function setOptions () {
   const _options = JSON.parse(localStorage.getItem('options') || '{}')
   options = reactive({
     ...options,
     ..._options
   })
+  activeName.value = window.localStorage.getItem('activeName') || '1'
 }
 
 setOptions()
-
 
 watch(
   () => options,
@@ -386,10 +387,11 @@ function handleBooksData (_bookList: Array<BookData>) {
 function updateData (data: BookData) {
   const { title, texts, bookId } = data
   options.title = title
-  $emit('list-update', texts)
+  computedTag()
   if (!texts.length && !bookId) {
     ElMessage.warning('未发现有效内容')
   } else {
+    $emit('list-update', { list: texts, options })
     parse(true)
   }
 }
@@ -405,6 +407,7 @@ function GetNotebooklist () {
       handleBooksData(res)
     })
     .catch(err => {
+      console.log(err)
       loading.value = false
     })
 }
@@ -427,7 +430,7 @@ function importAppleBooks () {
         setTimeout(() => {
           handleBooksData(res)
           loadingInstance.close()
-        }, 1500)
+        }, 500)
       } catch (error) {
         loadingInstance.close()
       }
@@ -439,7 +442,7 @@ function importAppleBooks () {
 }
 function parse (showBookList: boolean = false) {
   if(showBookList){
-    options.activeName = '2'
+    activeName.value = '2'
   }
   updateOptions()
   $emit('parse', options)
@@ -462,7 +465,6 @@ function updateOptions () {
     tagPosition,
     noEmptyLine,
     onlyTag,
-    activeName
   } = options
   const optionsData = {
     noTag,
@@ -472,7 +474,6 @@ function updateOptions () {
     tagPosition,
     noEmptyLine,
     onlyTag,
-    activeName
   }
   localStorage.setItem('options', JSON.stringify(optionsData))
 }
@@ -532,11 +533,14 @@ onMounted(() => {
 <style lang="scss" scoped>
 .left-bar {
   background-color: #e4f5ef;
-  margin-top: -40px;
-  padding-top: 40px;
   display: flex;
   flex-direction: column;
   user-select: none;
+  padding: 10px;
+  &.electron{
+    margin-top: -40px;
+    padding-top: 40px;
+  }
   &-form {
     height: 0px;
     flex: 1;

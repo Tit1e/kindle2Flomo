@@ -1,7 +1,7 @@
 <template>
-  <div class="memo-card radius" :class="{active: props.info.checked, empty: props.info.isEmpty, highlight: props.info.send}" @click="toggleChecked">
+  <div class="memo-card radius" :class="{active: props.info.checked, empty: props.info.isEmpty, 'text-highlight': props.info.send}" @click="toggleChecked">
     <div class="priview">
-      <pre v-html="props.info._text"></pre>
+      <pre v-html="props.info.text"></pre>
     </div>
   </div>
 </template>
@@ -47,7 +47,7 @@ watch(
   },
   {deep: true}
 )
-let timer = null
+let timer: any = null
 let clicking = false
 function toggleChecked(){
   if(timer) {
@@ -71,11 +71,12 @@ function submit () {
 
 <style lang="scss" scoped>
 .memo-card {
-  background-color: #e4f5ef;
+  background-color: #d5f0e7;
   margin-bottom: 10px;
   display: flex;
   align-items: center;
   box-shadow: 0px 0px 10px 6px rgba($color: #000000, $alpha: 0.03);
+  box-sizing: border-box;
   &:hover{
     cursor: pointer;
   }

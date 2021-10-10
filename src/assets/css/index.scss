@@ -64,9 +64,13 @@ body {
     display: none;
   }
 
-  .highlight {
+  .text-highlight{
     color: #55bb8e;
+  }
+
+  .highlight {
     padding: 0 4px;
+    @extend .text-highlight;
   }
 
   .border {
@@ -138,5 +142,20 @@ body {
   }
   .mr-10{
     margin-right: 10px;
+  }
+  .mb-6{
+    margin-bottom: 6px;
+  }
+  .mb-10{
+    margin-bottom: 10px;
+  }
+  .mr-20{
+    margin-right: 20px;
+  }
+  .block{
+    display: block;
+  }
+  .block-center{
+    margin: 0 auto;
   }
 }

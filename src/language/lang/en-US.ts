@@ -15,5 +15,11 @@ export default  {
   'tag-options': 'Tag Options',
   'notes-options': 'Notes Options',
   'reading-notes': 'reading',
-  'upload-file': 'Upload HTML/TXT'
+  'upload-file': 'Upload HTML/TXT',
+  'thanks': 'Thanks for lupeng',
+  'all': 'All',
+  'check-update': 'Check Update',
+  'blog': 'Blog',
+  'jike': 'JIKE',
+  'help': 'Help'
 }

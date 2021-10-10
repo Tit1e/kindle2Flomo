@@ -1,5 +1,6 @@
 module.exports = {
   publicPath: './',
+
   // 第三方插件配置
   pluginOptions: {
     electronBuilder: {
@@ -93,10 +94,13 @@ module.exports = {
       }
     }
   },
+
   chainWebpack: config => {
     config.plugin('html').tap(args => {
       args[0].title = 'Send To Flomo'
       return args
     })
-  }
+  },
+
+  productionSourceMap: false
 }
