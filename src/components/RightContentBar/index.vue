@@ -7,9 +7,10 @@
       <span class="highlight">{{ importCount }} / 100</span> 条 MEMO
     </div>
     <div class="bar-right">
-      <div class="thanks" @click="openUrl('https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg')">
+      <div class="thanks" v-if="isElectron" @click="openUrl('https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg')">
         {{t('thanks')}}
       </div>
+      <a class="thanks" v-else href="https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg" target="_blank">{{t('thanks')}}</a>
       <el-tooltip
           effect="dark"
           placement="bottom"
@@ -63,7 +64,7 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <a
-                  href="https://personal-1251959693.cos.ap-chengdu.myqcloud.com/2021-05-23-IMG_8849.PNG"
+                  href="https://web.okjike.com/u/FFDB1E46-63DC-43BE-AA1A-36F3D9CD0017"
                   target="_blank"
                 >
                   {{t('jike')}}
