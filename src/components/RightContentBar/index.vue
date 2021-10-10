@@ -1,7 +1,14 @@
 <template>
   <div class="right-content-bar">
     <div class="flex-1 flex">
-      <el-button type="text" class="mr-10" @click="selectedAll(true)">{{t('all')}}</el-button>
+      <el-tooltip effect="dark" placement="left">
+        <template #content>
+          <div style="width:200px;line-height: 1.5em;">
+            未经审视的生活不值得过，未经审视的思想也不应该汇入你的大脑。建议在导入前审视一遍内容。
+          </div>
+        </template>
+        <el-button type="text" class="mr-10" @click="selectedAll(true)">{{t('all')}}</el-button>
+      </el-tooltip>
       已选择 <span class="highlight">{{ selectedNum }}</span> 条 MEMO，共
       <span class="highlight">{{ total }}</span> 条。今日已导入
       <span class="highlight">{{ importCount }} / 100</span> 条 MEMO
