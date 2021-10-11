@@ -46,6 +46,16 @@ export default function checkUpdate (mainWindow) {
 
   // 暂无新版本可更新
   autoUpdater.on('update-not-available', info => {
+    dialog.showMessageBox({
+      type: 'info',
+      title: '应用更新',
+      message: '已经是最新版本',
+      buttons: ['关闭']
+    })
+    .then(buttonIndex => {
+      if (buttonIndex.response == 0) {
+      }
+    })
     mainWindow.webContents.send('updateNotAvailable', info)
   })
 
