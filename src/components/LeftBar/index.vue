@@ -71,8 +71,7 @@
                 <el-tooltip effect="dark" placement="right">
                   <template #content>
                     <div slot="content" style="line-height: 1.5em">
-                      由于 Apple Books
-                      与微信读书笔记的笔记读取方式限制，只能通过安装应用读取。
+                      由于 Apple Books 与微信读书笔记的笔记读取方式限制，只能通过安装应用读取。
                       <br />
                       或者去
                       <a

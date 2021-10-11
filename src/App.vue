@@ -69,33 +69,6 @@ function sendMemo (url, list, _index) {
     ElMessage.error('导入失败')
   })
 }
-function confirmCanEdit (options) {
-  const canEdit = localStorage.getItem('canEdit') || '0'
-  if (canEdit === '0') {
-    ElMessageBox.alert('双击 MEMO 可进入编辑模式', '提示', {
-      confirmButtonText: '知道了，不再提示',
-      callback: () => {
-        localStorage.setItem('canEdit', '1')
-        parse(options)
-      }
-    })
-  }
-}
-function handleTag(options, tag, text){
-  const {noTag, tagPosition, noEmptyLine, onlyTag} = options
-  let _text = text
-  if(!noTag) {
-    // tag 位置在上方
-    if(tagPosition){
-      // 在上方时空行加在 tag 后
-      _text = (onlyTag ? `${tag}\r\n\r\n` : (noEmptyLine ? `${tag}\r\n` : `${tag}\r\n\r\n`)) + _text
-    }else{
-      // 在上方时空行加在 tag 前
-      _text = _text + (onlyTag ? `\r\n${tag}` : (noEmptyLine ? tag : `\r\n${tag}`))
-    }
-  }
-  return _text
-}
 function parse (options) {
   store.commit('SET_TEXT_LIST', {
     options,

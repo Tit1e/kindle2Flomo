@@ -61,7 +61,7 @@ export default function checkUpdate (mainWindow) {
         type: 'info',
         title: '应用更新',
         message: '下载完成，是否立即更新？',
-        buttons: ['立即更新', '下次再说']
+        buttons: ['立即更新', '以后再说']
       })
       .then(buttonIndex => {
         if (buttonIndex.response == 0) {
