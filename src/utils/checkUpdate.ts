@@ -3,17 +3,17 @@ const { autoUpdater } = require('electron-updater')
 //默认会自动下载新版本，如果不想自动下载，设置autoUpdater.autoDownload = false
 // 不自动下载
 autoUpdater.autoDownload = false
-// 手动触发下载
-// autoUpdater.downloadUpdate()
 ipcMain.on('update', (event, arg) => {
   autoUpdater.checkForUpdates()
 })
+
 export default function checkUpdate (mainWindow) {
   //检测更新
   autoUpdater.checkForUpdates()
 
   //监听'error'事件
   autoUpdater.on('error', err => {
+    console.log(err)
     dialog.showMessageBox({
       type: 'info',
       title: '检查更新',
