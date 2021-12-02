@@ -13,13 +13,13 @@ export default function checkUpdate (mainWindow) {
 
   //监听'error'事件
   autoUpdater.on('error', err => {
-    console.log(err)
-    dialog.showMessageBox({
-      type: 'info',
-      title: '检查更新',
-      message: '检查更新失败',
-      buttons: ['关闭']
-    })
+    mainWindow.webContents.send('error', err)
+    // dialog.showMessageBox({
+    //   type: 'info',
+    //   title: '检查更新',
+    //   message: '检查更新失败',
+    //   buttons: ['关闭']
+    // })
   })
 
   // 检查更新中
