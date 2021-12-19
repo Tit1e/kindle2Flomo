@@ -14,6 +14,7 @@ interface Text {
   checked: boolean
   isEdit: boolean,
   _text?: string,
+  _tag?: string,
   send?: boolean
 }
 
@@ -51,6 +52,8 @@ function parse (options: Options, contentList: Text[], tag: string) {
     // 如果笔记在摘录上方
     if (notePosition) textArr.reverse()
     let text = textArr.filter(i => i).join(noEmptyLine ? '' : '\r\n')
+    i._text = i.text
+    i._tag = tag
     i.text = handleTag(options, tag, text)
     i.send = false
     return i

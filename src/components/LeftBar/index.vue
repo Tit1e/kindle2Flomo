@@ -1,5 +1,5 @@
 <template>
-  <div class="left-bar" :class="{'pt-10': !isElectron, electron: isElectron}">
+  <div class="left-bar" :class="{ 'pt-10': !isElectron, electron: isElectron }">
     <div class="left-bar-form">
       <el-form
         :model="options"
@@ -23,7 +23,7 @@
                 <div class="upload-content radius flex pd-10 border">
                   <i class="el-icon-folder-add"></i>
                   <div class="el-upload__text">
-                    {{t('upload-file')}}
+                    {{ t('upload-file') }}
                   </div>
                 </div>
               </el-upload>
@@ -71,7 +71,8 @@
                 <el-tooltip effect="dark" placement="right">
                   <template #content>
                     <div slot="content" style="line-height: 1.5em">
-                      由于 Apple Books 与微信读书笔记的笔记读取方式限制，只能通过安装应用读取。
+                      由于 Apple Books
+                      与微信读书笔记的笔记读取方式限制，只能通过安装应用读取。
                       <br />
                       或者去
                       <a
@@ -89,7 +90,10 @@
                       文件访问密码：47if
                     </div>
                   </template>
-                  <a href="https://github.com/Tit1e/kindle2Flomo/releases" target="_blank">
+                  <a
+                    href="https://github.com/Tit1e/kindle2Flomo/releases"
+                    target="_blank"
+                  >
                     从 Apple Books / 微信读书 导入
                   </a>
                 </el-tooltip>
@@ -111,7 +115,7 @@
                     <i class="el-icon-set-up mr-4"></i>{{ t('parse-options') }}
                   </div>
                 </template>
-                <el-divider>{{t('api-options')}}</el-divider>
+                <el-divider>{{ t('api-options') }}</el-divider>
                 <el-form-item label="" label-width="0px">
                   <el-input
                     v-model="options.api"
@@ -120,7 +124,7 @@
                     placeholder="API 采用本地存储"
                   ></el-input>
                 </el-form-item>
-                <el-divider>{{t('tag-options')}}</el-divider>
+                <el-divider>{{ t('tag-options') }}</el-divider>
                 <el-form-item label="Tag">
                   <div class="flex">
                     <div class="flex-1">
@@ -141,8 +145,12 @@
                 <template v-if="!options.noTag">
                   <el-form-item :label="t('position-of-tag')">
                     <el-radio-group v-model="options.tagPosition">
-                      <el-radio-button :label="true">{{t('top')}}</el-radio-button>
-                      <el-radio-button :label="false">{{t('bottom')}}</el-radio-button>
+                      <el-radio-button :label="true">{{
+                        t('top')
+                      }}</el-radio-button>
+                      <el-radio-button :label="false">{{
+                        t('bottom')
+                      }}</el-radio-button>
                     </el-radio-group>
                   </el-form-item>
                 </template>
@@ -164,12 +172,12 @@
                     </div>
                   </div>
                 </el-form-item>
-                <el-divider>{{t('notes-options')}}</el-divider>
+                <el-divider>{{ t('notes-options') }}</el-divider>
                 <el-form-item label="位置">
                   <el-radio-group v-model="options.notePosition">
-                      <el-radio-button :label="true">摘录上方</el-radio-button>
-                      <el-radio-button :label="false">摘录下方</el-radio-button>
-                    </el-radio-group>
+                    <el-radio-button :label="true">摘录上方</el-radio-button>
+                    <el-radio-button :label="false">摘录下方</el-radio-button>
+                  </el-radio-group>
                 </el-form-item>
                 <el-form-item label="分隔符">
                   <el-input
@@ -185,7 +193,9 @@
               </el-collapse-item>
               <el-collapse-item name="2">
                 <template #title>
-                  <div><i class="el-icon-notebook-2 mr-4"></i>{{t('book-list')}}</div>
+                  <div>
+                    <i class="el-icon-notebook-2 mr-4"></i>{{ t('book-list') }}
+                  </div>
                 </template>
                 <template v-if="bookList.length">
                   <el-form-item :label="t('book-name')">
@@ -220,20 +230,24 @@
         <el-tooltip
           effect="dark"
           :disabled="false"
-          :content="importDisabled ? '导入数量已达 100 条限额' : '请确保 API 已填写，需要导入的 MEMO 已勾选'"
+          :content="
+            importDisabled
+              ? '导入数量已达 100 条限额'
+              : '请确保 API 已填写，需要导入的 MEMO 已勾选'
+          "
           placement="top"
         >
           <span style="margin-left: 10px;">
-            <el-button type="primary" :disabled="disabledSend" size="mini"
-              >{{t('import')}}</el-button
-            >
+            <el-button type="primary" :disabled="disabledSend" size="mini">{{
+              t('import')
+            }}</el-button>
           </span>
         </el-tooltip>
       </template>
       <template v-else>
-        <el-button type="primary" size="mini" @click="submit"
-          >{{t('import')}}</el-button
-        >
+        <el-button type="primary" size="mini" @click="submit">{{
+          t('import')
+        }}</el-button>
       </template>
     </div>
     <!-- 微信登陆弹窗 -->
@@ -246,7 +260,11 @@
       width="270px"
     >
       <div class="iframe-box" v-loading="loading">
-        <iframe v-if="showDialog" src="https://weread.qq.com/#login" frameborder="0"></iframe>
+        <iframe
+          v-if="showDialog"
+          src="https://weread.qq.com/#login"
+          frameborder="0"
+        ></iframe>
       </div>
       <div class="text-center" v-show="!loading">
         <el-button
@@ -273,8 +291,7 @@ import {
   getReviewList
 } from '@/utils/weread.js'
 import { useI18n } from 'vue-i18n'
-import {useStore} from 'vuex'
-
+import { useStore } from 'vuex'
 const { t } = useI18n()
 interface Text {
   text: string
@@ -292,7 +309,6 @@ const $emit = defineEmits([
   'update-tag',
   'parse',
   'submit',
-  'reset',
   'list-update'
 ])
 const store = useStore()
@@ -324,7 +340,9 @@ watch(
   }
 )
 
-const disabledSend = computed(() => !selectedList.value.length || !options.api || importDisabled.value)
+const disabledSend = computed(
+  () => !selectedList.value.length || !options.api || importDisabled.value
+)
 
 function setOptions () {
   const _options = JSON.parse(localStorage.getItem('options') || '{}')
@@ -343,7 +361,7 @@ watch(
     computedTag()
     parse()
   },
-  {deep: true}
+  { deep: true }
 )
 function selectChange (val: String) {
   const data = bookList.value.find(i => i.title === val)
@@ -440,7 +458,7 @@ function importAppleBooks () {
     })
 }
 function parse (showBookList: boolean = false) {
-  if(showBookList){
+  if (showBookList) {
     activeName.value = '2'
   }
   updateOptions()
@@ -456,15 +474,7 @@ function onlyTagChange (val: Boolean) {
   }
 }
 function updateOptions () {
-  const {
-    noTag,
-    api,
-    tag,
-    split,
-    tagPosition,
-    noEmptyLine,
-    onlyTag,
-  } = options
+  const { noTag, api, tag, split, tagPosition, noEmptyLine, onlyTag } = options
   const optionsData = {
     noTag,
     api,
@@ -472,7 +482,7 @@ function updateOptions () {
     split,
     tagPosition,
     noEmptyLine,
-    onlyTag,
+    onlyTag
   }
   localStorage.setItem('options', JSON.stringify(optionsData))
 }
@@ -495,37 +505,42 @@ function computedTag () {
 }
 function reset () {
   bookList.value = []
-  $emit('reset')
 }
 function listenFile () {
-  document.querySelector('#fileSelect input')
-    .addEventListener('change', e => {
-      reset()
-        const file = e.target.files[0]
-        const ext = file.name
-          .split('.')
-          .pop()
-          .toLowerCase()
-        const reader = new FileReader()
-        reader.onload = () => {
-          if (ext === 'txt') {
-            bookList.value = paresClip(reader.result)
-            try {
-              const data = bookList.value[0]
-              options.book = data.title
-              updateData(data)
-            } catch (error) {}
-          }
-          if (ext === 'html') {
-            const data = readFile(reader.result)
-            updateData(data)
-          }
-        }
-        reader.readAsText(file)
-    })
+  document.querySelector('#fileSelect input').addEventListener('change', e => {
+    reset()
+    const file = e.target.files[0]
+    const ext = file.name
+      .split('.')
+      .pop()
+      .toLowerCase()
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (ext === 'txt') {
+        bookList.value = paresClip(reader.result)
+        try {
+          const data = bookList.value[0]
+          options.book = data.title
+          updateData(data)
+        } catch (error) {}
+      }
+      if (ext === 'html') {
+        const data = readFile(reader.result)
+        updateData(data)
+      }
+    }
+    reader.readAsText(file)
+  })
+}
+function exportCSV(){
+  return options.title
 }
 onMounted(() => {
   listenFile()
+})
+
+expose({
+  exportCSV
 })
 </script>
 
@@ -536,7 +551,7 @@ onMounted(() => {
   flex-direction: column;
   user-select: none;
   padding: 10px;
-  &.electron{
+  &.electron {
     margin-top: -40px;
     padding-top: 40px;
   }
@@ -599,15 +614,15 @@ onMounted(() => {
         color: inherit;
       }
     }
-    :deep(.el-divider){
-      .el-divider__text{
+    :deep(.el-divider) {
+      .el-divider__text {
         background-color: #e4f5ef;
       }
     }
     :deep(.el-collapse) {
       border: none;
       .el-collapse-item {
-        &__wrap{
+        &__wrap {
           background-color: #e4f5ef;
         }
         &__header {
@@ -620,7 +635,7 @@ onMounted(() => {
         }
       }
     }
-    .list-wrap{
+    .list-wrap {
       max-height: calc(100vh - 446px);
       overflow: scroll;
       margin-bottom: -16px;
@@ -629,7 +644,7 @@ onMounted(() => {
           background-color: #fff;
           width: 100%;
           margin: 0 0 10px 0;
-          .el-radio__label{
+          .el-radio__label {
             overflow: hidden;
             text-overflow: ellipsis;
             width: 100%;

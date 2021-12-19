@@ -2,6 +2,7 @@
   <div class="right-content" :class="{electron: isElectron}">
     <right-content-bar
       :class="{'right-content-position': isElectron}"
+      @export="exportCSV"
     />
     <div class="content-box">
       <div class="memo-box" :style="{height: boxHeight}">
@@ -42,6 +43,15 @@ import {useStore} from 'vuex'
 
 const store = useStore()
 const isElectron = store.getters.isElectron
+
+const $emit = defineEmits([
+  'export',
+])
+
+function exportCSV(){
+  $emit('export')
+}
+
 
 const boxHeight = ref('1000000px')
 async function computedHeight(){

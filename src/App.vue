@@ -3,14 +3,13 @@
   <div class="content-wrap" v-loading="loading" :element-loading-text="loadingText">
     <left-bar
       class="left-bar"
-      :list="contentList"
+      ref="leftContent"
       @submit="submit"
       @parse="parse"
       @list-update="listUpdate"
       @update-tag="updateTag"
-      @reset="reset"
     />
-    <right-content class="right-content" />
+    <right-content class="right-content" @export="exportCSV" />
   </div>
 </template>
 
@@ -18,9 +17,10 @@
 import TheHead from '@/components/TheHead'
 import LeftBar from '@/components/LeftBar'
 import RightContent from '@/components/RightContent'
-import { ref, toRefs, toRef, reactive, computed, nextTick, watch } from 'vue'
+import { ref, toRefs, toRef, reactive, computed, nextTick, watch, onMounted } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import addMemo from '@/utils/addMemo'
+import JSonToCSV from '@/utils/exportCSV'
 import { useStore } from 'vuex'
 interface Text {
   text: string
@@ -31,7 +31,6 @@ interface Text {
 const store = useStore()
 const isElectron = store.getters.isElectron
 const importCount = computed(() => store.getters.importCount)
-const contentList = ref([])
 const selectedList = computed(() => store.getters.selectedList)
 const tag = ref('')
 let loading = ref(false)
@@ -86,8 +85,24 @@ function listUpdate ({ list, options }) {
 function updateTag (_tag) {
   tag.value = _tag
 }
-function reset () {
-  contentList.value = []
+const leftContent = ref(null)
+function exportCSV(){
+  const title = leftContent.value.exportCSV()
+  const contentList = store.getters.textList.map(i => {
+    i._text = i._text.replace(/\r/g,"").replace(/\n/g,"")
+    i.note = i.note || ''
+    i._tag = i._tag || ''
+    return i
+  })
+  console.log(title, contentList)
+  JSonToCSV.setDataConver({
+    data: contentList,
+    fileName: title,
+    columns: {
+      title: ['书摘', '笔记', '标签'],
+      key: ['_text', 'note', '_tag']
+    }
+  })
 }
 </script>
 

@@ -21,6 +21,13 @@
       <el-tooltip
           effect="dark"
           placement="bottom"
+          content="导出 CSV 文件"
+        >
+        <div class="export k-icon" @click="exportCSV"></div>
+      </el-tooltip>
+      <el-tooltip
+          effect="dark"
+          placement="bottom"
         >
           <template #content>
             <div class="help-box">
@@ -41,7 +48,13 @@
           </template>
           <div class="help k-icon" :title="t('help')" @click=""></div>
         </el-tooltip>
-      <div class="translate k-icon" title="中/英文切换" @click="toggleLanguage"></div>
+        <el-tooltip
+          effect="dark"
+          placement="bottom"
+          content="中/英文切换"
+        >
+          <div class="translate k-icon" @click="toggleLanguage"></div>
+        </el-tooltip>
       <el-dropdown @command="handleCommand">
         <div class="setting k-icon"></div>
         <template #dropdown>
@@ -98,6 +111,14 @@ if(isElectron){
   shell = require('@electron/remote').shell
   ipcRenderer = require('electron').ipcRenderer
 
+}
+
+const $emit = defineEmits([
+  'export',
+])
+
+function exportCSV(){
+  $emit('export')
 }
 
 
@@ -211,6 +232,10 @@ if(isElectron){
     &.translate {
       margin-right: 16px;
       background-image: url(~@/assets/icons/translate.png);
+    }
+    &.export {
+      margin-right: 16px;
+      background-image: url(~@/assets/icons/export.png);
     }
     &.setting {
       background-image: url(~@/assets/icons/setting.png);
