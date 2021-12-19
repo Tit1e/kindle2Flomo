@@ -539,7 +539,7 @@ onMounted(() => {
   listenFile()
 })
 
-expose({
+defineExpose({
   exportCSV
 })
 </script>

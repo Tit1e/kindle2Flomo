@@ -94,7 +94,6 @@ function exportCSV(){
     i._tag = i._tag || ''
     return i
   })
-  console.log(title, contentList)
   JSonToCSV.setDataConver({
     data: contentList,
     fileName: title,
