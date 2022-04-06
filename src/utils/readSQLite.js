@@ -38,7 +38,8 @@ if (process.env.IS_ELECTRON) {
               ZANNOTATIONASSETID
           FROM ZAEANNOTATION
           WHERE ZANNOTATIONSELECTEDTEXT IS NOT NULL
-          ORDER BY ZANNOTATIONASSETID ASC
+          AND ZANNOTATIONDELETED = 0
+          ORDER BY ZANNOTATIONASSETID ASC, ZPLLOCATIONRANGESTART ASC
         `,
         async function (err, res) {
           if (!err) {
@@ -77,11 +78,22 @@ if (process.env.IS_ELECTRON) {
             } catch (error) {
               console.log(error)
             }
+            console.log(books)
+            if (res.length) {
+              resolve(
+                books.filter(i => i.texts).map(j => {
+                  return {
+                    title: j.BKDisplayName,
+                    texts: j.texts
+                  }
+                })
+              )
+            }
             resolve(
-              books.filter(i => i.texts).map(j => {
+              books.map(b => {
                 return {
-                  title: j.BKDisplayName,
-                  texts: j.texts
+                  title: b.BKDisplayName,
+                  texts: []
                 }
               })
             )
