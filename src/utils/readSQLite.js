@@ -78,7 +78,6 @@ if (process.env.IS_ELECTRON) {
             } catch (error) {
               console.log(error)
             }
-            console.log(books)
             if (res.length) {
               resolve(
                 books.filter(i => i.texts).map(j => {
