@@ -22,8 +22,12 @@
 * [releases](https://github.com/Tit1e/kindle2Flomo/releases)
 
 ## 问题反馈
-![](https://personal-1251959693.cos.ap-chengdu.myqcloud.com/2021-08-09-kindle2flomo%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88.png)
+![](./screenshot/qrcode.png)
 
 
 ## 开发注意事项
 **bplistParser** 这个依赖需手动修改 `maxObjectSize` 与 `maxObjectCount` 这两个常量的数值，修改得大一些，否则当 `Books.plist` 中图书数量过多时会出现无法解析的问题。
+```js
+exports.maxObjectSize = 1000 * 1000 * 1000; // 100Meg
+exports.maxObjectCount = 32768 * 2;
+```
