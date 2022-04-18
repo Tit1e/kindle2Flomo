@@ -3,7 +3,6 @@ interface Options {
   noTag: any,
   tagPosition: any,
   noEmptyLine: any,
-  onlyTag: any,
   split: any,
   notePosition: any
 }
@@ -19,16 +18,16 @@ interface Text {
 }
 
 function handleTag(options: Options, tag: string, text: string){
-  const {noTag, tagPosition, noEmptyLine, onlyTag} = options
+  const {noTag, tagPosition, noEmptyLine} = options
   let _text = text
   if(!noTag) {
     // tag 位置在上方
     if(tagPosition){
       // 在上方时空行加在 tag 后
-      _text = (onlyTag ? `${tag}\r\n\r\n` : (noEmptyLine ? `${tag}\r\n` : `${tag}\r\n\r\n`)) + _text
+      _text = (noEmptyLine ? `${tag}\r\n` : `${tag}\r\n\r\n`) + _text
     }else{
       // 在上方时空行加在 tag 前
-      _text = _text + (onlyTag ? `\r\n${tag}` : (noEmptyLine ? tag : `\r\n${tag}`))
+      _text = _text + (noEmptyLine ? tag : `\r\n${tag}`)
     }
   }
   return _text
@@ -40,7 +39,6 @@ function parse (options: Options, contentList: Text[], tag: string) {
     tagPosition,
     notePosition,
     noEmptyLine,
-    onlyTag,
     noTag
   } = options
   // 渲染用的tag
