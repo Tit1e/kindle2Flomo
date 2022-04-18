@@ -115,7 +115,7 @@ if(isElectron){
 
 const $emit = defineEmits([
   'export',
-]) 
+])
 
 function exportCSV(){
   $emit('export')

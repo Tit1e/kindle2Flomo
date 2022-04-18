@@ -1,7 +1,6 @@
 const cheerio = require('cheerio')
 import { getType } from './paresClip'
 function readFile(sourceText) {
-  console.log(sourceText)
   // 除字符串内所有的换行符
   let text = sourceText
     .replace(/\n|\r/g, "")
