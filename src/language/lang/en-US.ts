@@ -8,6 +8,8 @@ export default  {
   'position-of-tag': 'Position Of Tag',
   'top': 'Top',
   'bottom': 'Bottom',
+  'on': 'On',
+  'off': 'OFF',
   'book-name': 'Book Name',
   'book-list': 'Book List',
   'import': 'Import',

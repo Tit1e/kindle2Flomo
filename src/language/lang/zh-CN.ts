@@ -8,6 +8,8 @@ export default  {
   'position-of-tag': '位置',
   'top': '顶部',
   'bottom': '底部',
+  'on': '启用',
+  'off': '禁用',
   'book-name': '书名',
   'book-list': '书籍列表',
   'import': '导入',
