@@ -1,11 +1,29 @@
 'use strict'
-import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, Tray, Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import checkUpdate from './utils/checkUpdate'
 const remoteMain = require('@electron/remote/main')
+const path = require('path')
+
+// 用户路径
+// app.getPath('userData')
+
 remoteMain.initialize()
 const isDevelopment = process.env.NODE_ENV !== 'production'
+// let tray = null
+// app.whenReady().then(() => {
+//   tray = new Tray(path.join(__dirname, './AppIcon.png'))
+//   const contextMenu = Menu.buildFromTemplate([
+//     { label: 'Item1', type: 'radio' },
+//     { label: 'Item2', type: 'radio' },
+//     { label: 'Item3', type: 'radio', checked: true },
+//     { label: 'Item4', type: 'radio' }
+//   ])
+//   tray.setToolTip('This is my application.')
+//   tray.setContextMenu(contextMenu)
+//   tray.setTitle('1 / 100')
+// })
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -16,6 +34,8 @@ async function createWindow() {
     width: 1200,
     height: 800,
     frame: false,
+    minWidth: 930,
+    minHeight: 600,
     titleBarStyle: 'hidden',
     webPreferences: {
       // 禁用安全策略
@@ -23,10 +43,11 @@ async function createWindow() {
       enableRemoteModule: true,
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      nodeIntegration: !!process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
+  win.setMenu(null)
   remoteMain.enable(win.webContents)
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
