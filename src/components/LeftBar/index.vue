@@ -71,23 +71,11 @@
                 <el-tooltip effect="dark" placement="right">
                   <template #content>
                     <div slot="content" style="line-height: 1.5em">
-                      由于 Apple Books
-                      与微信读书笔记的笔记读取方式限制，只能通过安装应用读取。
-                      <br />
-                      或者去
-                      <a
-                        style="color:#d96767;"
-                        href="https://github.com/Tit1e/kindle2Flomo/releases"
-                        target="_blank"
-                        >蓝奏云</a
-                      >
-                      下载
-                      <br />
-                      <span style="color:#d96767;"
-                        >注意下载版本号最新的安装包</span
-                      >
-                      <br />
-                      文件访问密码：47if
+                      <b>点击下载应用</b>
+                      <br>
+                      由于 Apple Books 与微信读书笔记的读取方式限制，
+                      <br>
+                      必须安装客户端才能使用。
                     </div>
                   </template>
                   <a
@@ -153,25 +141,17 @@
                       }}</el-radio-button>
                     </el-radio-group>
                   </el-form-item>
+                  <el-form-item label="空行">
+                    <el-radio-group v-model="options.noEmptyLine">
+                      <el-radio-button :label="false">{{
+                        t('on')
+                      }}</el-radio-button>
+                      <el-radio-button :label="true">{{
+                        t('off')
+                      }}</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
                 </template>
-                <el-form-item label="空行">
-                  <div class="flex">
-                    <div class="flex-1 pl-10">
-                      <el-checkbox
-                        v-model="options.onlyTag"
-                        @change="onlyTagChange"
-                        >仅 Tag 前 / 后</el-checkbox
-                      >
-                    </div>
-                    <div class="flex-1 pl-10">
-                      <el-checkbox
-                        v-model="options.noEmptyLine"
-                        :disabled="options.onlyTag"
-                        >禁用</el-checkbox
-                      >
-                    </div>
-                  </div>
-                </el-form-item>
                 <el-divider>{{ t('notes-options') }}</el-divider>
                 <el-form-item label="位置">
                   <el-radio-group v-model="options.notePosition">
@@ -328,7 +308,6 @@ let options = reactive({
   tagPosition: false,
   notePosition: false,
   noEmptyLine: true,
-  onlyTag: false
 })
 
 let activeName = ref('1')
@@ -467,14 +446,8 @@ function parse (showBookList: boolean = false) {
 function submit () {
   $emit('submit', options.api)
 }
-function onlyTagChange (val: Boolean) {
-  // 只在 tag 前后时，禁用空行
-  if (val) {
-    options.noEmptyLine = true
-  }
-}
 function updateOptions () {
-  const { noTag, api, tag, split, tagPosition, noEmptyLine, onlyTag } = options
+  const { noTag, api, tag, split, tagPosition, noEmptyLine } = options
   const optionsData = {
     noTag,
     api,
@@ -482,7 +455,6 @@ function updateOptions () {
     split,
     tagPosition,
     noEmptyLine,
-    onlyTag
   }
   localStorage.setItem('options', JSON.stringify(optionsData))
 }
@@ -526,6 +498,8 @@ function listenFile () {
       }
       if (ext === 'html') {
         const data = readFile(reader.result)
+        bookList.value = [data]
+        options.book = data.title
         updateData(data)
       }
     }
