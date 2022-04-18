@@ -5,7 +5,7 @@
       @export="exportCSV"
     />
     <div class="content-box">
-      <div class="memo-box" :style="{height: boxHeight}">
+      <div class="memo-box">
         <memo-card
           @dblclick.native.stop="showDialog(item)"
           v-for="(item, index) in contentList"
@@ -52,37 +52,6 @@ function exportCSV(){
   $emit('export')
 }
 
-
-const boxHeight = ref('1000000px')
-async function computedHeight(){
-  boxHeight.value = '1000000px'
-  await nextTick()
-  const items = document.querySelectorAll('.memo-item')
-  let maxHeight = 0
-  const lastIndex = items.length - 1
-  for(let i = lastIndex; i > 0; i--){
-    const { offsetTop, clientHeight} = items[i]
-    const height = offsetTop + clientHeight
-    if(height > maxHeight){
-      maxHeight = height
-    }
-  }
-  boxHeight.value = `${maxHeight}px`
-}
-function addListener(){
-  let timer = null
-  window.addEventListener('resize', e => {
-    if(timer) clearTimeout(timer)
-    timer = setTimeout(() => {
-      computedHeight()
-      clearTimeout(timer)
-      timer = null
-    }, 500)
-  })
-}
-onMounted(() => {
-  addListener()
-})
 const contentList = computed(() => {
   const contentList = store.getters.textList
   if(contentList.length === 2){
@@ -97,13 +66,6 @@ const contentList = computed(() => {
   }
   return contentList
 })
-watch(
-  () => contentList,
-  val => {
-    computedHeight()
-  },
-  { deep: true }
-)
 
 
 const dialogVisible = ref(false)
@@ -138,24 +100,14 @@ function closeDialog(){
     overflow: auto;
     .memo-box{
       display: flex;
-      flex-flow: column wrap;
+      flex-wrap: wrap;
       align-content: space-between;
-      &::before, &::after{
-        content: "";
-        flex-basis: 100%;
-        width: 10px;
-        order: 2;
-      }
       .memo-item{
         width: calc((100% - 20px) / 3);
-        &:nth-child(3n+1) {
-          order: 1;
-        }
-        &:nth-child(3n+2) {
-          order: 2;
-        }
+        margin-right: 10px;
+        margin-bottom: 10px;
         &:nth-child(3n) {
-          order: 3;
+          margin-right: 0px;
         }
       }
     }
@@ -170,6 +122,7 @@ function closeDialog(){
       .el-textarea{
         .el-textarea__inner{
           border: none;
+          text-align: justify;
         }
       }
     }
