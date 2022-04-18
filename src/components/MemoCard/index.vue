@@ -1,5 +1,6 @@
 <template>
   <div class="memo-card radius" :class="{active: props.info.checked, empty: props.info.isEmpty, 'text-highlight': props.info.send}" @click="toggleChecked">
+    <div class="top-bar">{{index + 1}}</div>
     <div class="priview">
       <pre v-html="props.info.text"></pre>
     </div>
@@ -72,11 +73,16 @@ function submit () {
 <style lang="scss" scoped>
 .memo-card {
   background-color: #d5f0e7;
-  margin-bottom: 10px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   box-shadow: 0px 0px 10px 6px rgba($color: #000000, $alpha: 0.03);
   box-sizing: border-box;
+  max-height: 300px;
+  padding: 10px;
+  .top-bar{
+    line-height: 24px;
+    opacity: 0.5;
+  }
   &:hover{
     cursor: pointer;
   }
@@ -94,24 +100,17 @@ function submit () {
     margin-left: 20px;
   }
   .priview {
-    padding: 10px;
     width: 100%;
     font-size: 14px;
     user-select: none;
+    box-sizing: border-box;
+    overflow: auto;
+    flex: 1;
     pre {
       white-space: pre-wrap;
       word-wrap: break-word;
       margin: 0;
       line-height: 1.8;
-    }
-    :deep(._tag) {
-      color: #5783f7;
-      cursor: pointer;
-      background-color: #eef3fe;
-      padding: 4px;
-      font-size: 12px;
-      border-radius: 3px;
-      display: inline-block;
     }
   }
 }
