@@ -19,7 +19,7 @@ module.exports = {
       nodeIntegration: true,
       builderOptions: {
         // 设置打包之后的应用名称
-        productName: 'Send2Flomo',
+        productName: 'Send2flomo',
         win: {
           icon: 'public/icons/AppIcon.png',
           // 图标路径 windows系统中icon需要256*256的ico格式图片，更换应用图标亦在此处
