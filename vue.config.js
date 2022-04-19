@@ -97,7 +97,7 @@ module.exports = {
 
   chainWebpack: config => {
     config.plugin('html').tap(args => {
-      args[0].title = 'Send To Flomo'
+      args[0].title = 'Send2flomo'
       return args
     })
   },
