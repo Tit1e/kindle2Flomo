@@ -1,4 +1,4 @@
-# Send2Flomo
+# Send2flomo
 
 ![](https://img.shields.io/badge/license-GPL-green.svg)
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -9,15 +9,19 @@
 [中文](./README.md) | [English](./README_en_US.md)
 
 ## Preview
-![](./screenshot/edit.png)
+![](./screenshot/home.png)
 
 ![](./screenshot/help.png)
+
+![](./screenshot/edit.png)
+
+![](./screenshot/reset.png)
 
 ## Register
 ### [flomo](https://flomoapp.com/register2/?MTAzNDE)
 
 ## Use In Browser (Only supports html and txt)
-### [Send2Flomo](https://tit1e.github.io/kindle2Flomo/)
+### [Send2flomo](https://tit1e.github.io/kindle2Flomo/)
 
 ## Mac Application Download
 ### [Netdisc](https://wwr.lanzoui.com/b02c3nkyf) Password：47if
