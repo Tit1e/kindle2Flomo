@@ -1076,9 +1076,9 @@
     "rimraf" "^3.0.2"
 
 "@popperjs/core@^2.10.1":
-  "integrity" "sha512-HnUhk1Sy9IuKrxEMdIRCxpIqPw6BFsbYSEUO9p/hNw5sMld/+3OLMWQP80F8/db9qsv3qUjs7ZR5bS/R+iinXw=="
-  "resolved" "https://registry.nlark.com/@popperjs/core/download/@popperjs/core-2.10.1.tgz"
-  "version" "2.10.1"
+  "integrity" "sha512-9X2obfABZuDVLCgPK9aX0a/x4jaOEweTTWE2+9sr0Qqqevj2Uv5XorvusThmc9XGYpS9yI+fhh8RTafBtGposw=="
+  "resolved" "https://registry.npmmirror.com/@popperjs/core/-/core-2.11.5.tgz"
+  "version" "2.11.5"
 
 "@sindresorhus/is@^0.14.0":
   "integrity" "sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ=="
@@ -1714,7 +1714,7 @@
 
 "@vueuse/core@~6.1.0":
   "integrity" "sha512-6KienU5QOWKuDqvHytep14274IGKyLlACzXjifOrgDQMkqvWZIUnDhpckT/1+O8n8DN59d5wzzICZI/2sfGCyg=="
-  "resolved" "https://registry.npmmirror.com/@vueuse/core/download/@vueuse/core-6.1.0.tgz"
+  "resolved" "https://registry.npmmirror.com/@vueuse/core/-/core-6.1.0.tgz"
   "version" "6.1.0"
   dependencies:
     "@vueuse/shared" "6.1.0"
@@ -1722,7 +1722,7 @@
 
 "@vueuse/shared@6.1.0":
   "integrity" "sha512-teW0TUQryGnEprHeOI6oH8NPVJBirknxksEiNCtdEjIi8W7JSTg8JPO+e1XlGI6ly24NDlDXUDYaHJayiaXjuw=="
-  "resolved" "https://registry.npmmirror.com/@vueuse/shared/download/@vueuse/shared-6.1.0.tgz"
+  "resolved" "https://registry.npmmirror.com/@vueuse/shared/-/shared-6.1.0.tgz"
   "version" "6.1.0"
   dependencies:
     "vue-demi" "*"
@@ -2213,9 +2213,9 @@
   "version" "1.0.1"
 
 "async-validator@^4.0.3":
-  "integrity" "sha512-LVoIbJNHPKsO7FMLamo88uxdrvayGkF3vLTMTeiN3CqAbP3qSafLRc6yx3Sq9lHkiEOLNpoA2jwwnfGDdu1SMQ=="
-  "resolved" "https://registry.nlark.com/async-validator/download/async-validator-4.0.3.tgz?cache=0&sync_timestamp=1630393256517&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fasync-validator%2Fdownload%2Fasync-validator-4.0.3.tgz"
-  "version" "4.0.3"
+  "integrity" "sha512-Pj2IR7u8hmUEDOwB++su6baaRi+QvsgajuFB9j95foM1N2gy5HM4z60hfusIO0fBPG5uLAEl6yCJr1jNSVugEQ=="
+  "resolved" "https://registry.npmmirror.com/async-validator/-/async-validator-4.0.7.tgz"
+  "version" "4.0.7"
 
 "async@^2.6.2":
   "integrity" "sha512-zflvls11DCy+dQWzTW2dzuilv8Z5X/pjfmZOWba6TNIVDm+2UDaJmXSOXlasHKfNBs8oo3M0aT50fDEWfKZjXg=="
@@ -2984,6 +2984,11 @@
     "ansi-styles" "^4.1.0"
     "supports-color" "^7.1.0"
 
+"charenc@0.0.2":
+  "integrity" "sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA=="
+  "resolved" "https://registry.npmmirror.com/charenc/-/charenc-0.0.2.tgz"
+  "version" "0.0.2"
+
 "check-types@^8.0.3":
   "integrity" "sha512-YpeKZngUmG65rLudJ4taU7VLkOCTMhNl/u4ctNC56LQS/zJTyNH0Lrtwm1tfTsbLlwvlfsA2d1c8vCf/Kh2KwQ=="
   "resolved" "https://registry.npmmirror.com/check-types/-/check-types-8.0.3.tgz"
@@ -3602,6 +3607,11 @@
     "shebang-command" "^2.0.0"
     "which" "^2.0.1"
 
+"crypt@0.0.2":
+  "integrity" "sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow=="
+  "resolved" "https://registry.npmmirror.com/crypt/-/crypt-0.0.2.tgz"
+  "version" "0.0.2"
+
 "crypto-browserify@^3.11.0":
   "integrity" "sha512-fz4spIh+znjO2VjL+IdhEpRJ3YN6sMzITSBijk6FK2UvTqruSQW+/cCZTSNsMiZNvUeq0CqurF+dAbyiGOY6Wg=="
   "resolved" "https://registry.npmmirror.com/crypto-browserify/-/crypto-browserify-3.12.0.tgz"
@@ -3806,9 +3816,9 @@
     "assert-plus" "^1.0.0"
 
 "dayjs@^1.10.7":
-  "integrity" "sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig=="
-  "resolved" "https://registry.nlark.com/dayjs/download/dayjs-1.10.7.tgz?cache=0&sync_timestamp=1631266519235&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fdayjs%2Fdownload%2Fdayjs-1.10.7.tgz"
-  "version" "1.10.7"
+  "integrity" "sha512-ER7EjqVAMkRRsxNCC5YqJ9d9VQYuWdGt7aiH2qA5R5wt8ZmWaP2dLUSIK6y/kVzLMlmh1Tvu5xUf4M/wdGJ5KA=="
+  "resolved" "https://registry.npmmirror.com/dayjs/-/dayjs-1.11.1.tgz"
+  "version" "1.11.1"
 
 "debug@^2.2.0":
   "integrity" "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="
@@ -4016,6 +4026,11 @@
   "integrity" "sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g=="
   "resolved" "https://registry.npmmirror.com/detect-node/-/detect-node-2.1.0.tgz"
   "version" "2.1.0"
+
+"dexie@^3.2.1":
+  "integrity" "sha512-Y8oz3t2XC9hvjkP35B5I8rUkKKwM36GGRjWQCMjzIYScg7W+GHKDXobSYswkisW7CxL1/tKQtggMDsiWqDUc1g=="
+  "resolved" "https://registry.npmmirror.com/dexie/-/dexie-3.2.1.tgz"
+  "version" "3.2.1"
 
 "diff@^4.0.1":
   "integrity" "sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A=="
@@ -4324,7 +4339,7 @@
 
 "element-plus@^1.1.0-beta.18":
   "integrity" "sha512-Q2cscYlpcbq/enuU/vlPLBP5K4bHkPakF6IkCiDrSgOkAr7XQYMem6QUOCRZ/8PFV0UnJRMyPJ7Xt0PKTFi8mg=="
-  "resolved" "https://registry.npmmirror.com/element-plus/download/element-plus-1.1.0-beta.18.tgz"
+  "resolved" "https://registry.npmmirror.com/element-plus/-/element-plus-1.1.0-beta.18.tgz"
   "version" "1.1.0-beta.18"
   dependencies:
     "@popperjs/core" "^2.10.1"
@@ -5899,7 +5914,7 @@
     "call-bind" "^1.0.2"
     "has-tostringtag" "^1.0.0"
 
-"is-buffer@^1.1.5":
+"is-buffer@^1.1.5", "is-buffer@~1.1.6":
   "integrity" "sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w=="
   "resolved" "https://registry.npmmirror.com/is-buffer/-/is-buffer-1.1.6.tgz"
   "version" "1.1.6"
@@ -6705,6 +6720,15 @@
     "inherits" "^2.0.1"
     "safe-buffer" "^5.1.2"
 
+"md5@^2.3.0":
+  "integrity" "sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g=="
+  "resolved" "https://registry.npmmirror.com/md5/-/md5-2.3.0.tgz"
+  "version" "2.3.0"
+  dependencies:
+    "charenc" "0.0.2"
+    "crypt" "0.0.2"
+    "is-buffer" "~1.1.6"
+
 "mdn-data@2.0.14":
   "integrity" "sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow=="
   "resolved" "https://registry.npmmirror.com/mdn-data/-/mdn-data-2.0.14.tgz"
@@ -6729,7 +6753,7 @@
 
 "memoize-one@^5.2.1":
   "integrity" "sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q=="
-  "resolved" "https://registry.nlark.com/memoize-one/download/memoize-one-5.2.1.tgz"
+  "resolved" "https://registry.npmmirror.com/memoize-one/-/memoize-one-5.2.1.tgz"
   "version" "5.2.1"
 
 "memory-fs@^0.4.1":
@@ -7269,9 +7293,9 @@
     "sort-keys" "^1.0.0"
 
 "normalize-wheel-es@^1.1.0":
-  "integrity" "sha512-gkcE5xzp8WkSGgu2HItXePGyh3qDOetgPYg0RnjclOIaWTCMB75NTrk0t6KVlbm6ShSikV3ykBFZMiR9GDkvkA=="
-  "resolved" "https://registry.npmmirror.com/normalize-wheel-es/download/normalize-wheel-es-1.1.0.tgz"
-  "version" "1.1.0"
+  "integrity" "sha512-scX83plWJXYH1J4+BhAuIHadROzxX0UBF3+HuZNY2Ks8BciE7tSTQ+5JhTsvzjaO0/EJdm4JBGrfObKxFf3Png=="
+  "resolved" "https://registry.npmmirror.com/normalize-wheel-es/-/normalize-wheel-es-1.1.2.tgz"
+  "version" "1.1.2"
 
 "npm-bundled@^1.0.1":
   "integrity" "sha512-x5DHup0SuyQcmL3s7Rx/YQ8sbw/Hzg0rj48eN0dV7hf5cmQq5PXIeioroH3raV1QC1yh3uTYuMThvEQF3iKgGQ=="
@@ -8657,7 +8681,7 @@
 
 "resize-observer-polyfill@^1.5.1":
   "integrity" "sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg=="
-  "resolved" "https://registry.nlark.com/resize-observer-polyfill/download/resize-observer-polyfill-1.5.1.tgz?cache=0&sync_timestamp=1618846967396&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fresize-observer-polyfill%2Fdownload%2Fresize-observer-polyfill-1.5.1.tgz"
+  "resolved" "https://registry.npmmirror.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz"
   "version" "1.5.1"
 
 "resolve-cwd@^2.0.0":
@@ -10317,7 +10341,8 @@
   "version" "1.1.2"
 
 "vue-cli-plugin-electron-builder@git://github.com/spuky/vue-cli-plugin-electron-builder#b6826fc":
-  "resolved" "git+ssh://git@github.com/spuky/vue-cli-plugin-electron-builder.git#b6826fc1a72231329e62e635ed0afb394ff840e2"
+  "integrity" "sha512-aLpNKkB/8ZiJ8s1BqimeNCse4IfO8mFF0OxYCi06vLkqCzWFkA+GNvK/PuFNxqyEly4FSxSPngtTFz/rFXAB/A=="
+  "resolved" "git+ssh://git@github.com/spuky/vue-cli-plugin-electron-builder.git"
   "version" "2.1.1"
   dependencies:
     "@vue/cli-shared-utils" "^4.5.6"
@@ -10342,9 +10367,9 @@
     "yargs" "^15.3.1"
 
 "vue-demi@*":
-  "integrity" "sha512-/3xFwzSykLW2HiiLie43a+FFgNOcokbBJ+fzvFXd0r2T8MYohqvphUyDQ8lbAwzQ3Dlcrb1c9ykifGkhSIAk6A=="
-  "resolved" "https://registry.nlark.com/vue-demi/download/vue-demi-0.11.4.tgz"
-  "version" "0.11.4"
+  "integrity" "sha512-BREuTgTYlUr0zw0EZn3hnhC3I6gPWv+Kwh4MCih6QcAeaTlaIX0DwOVN0wHej7hSvDPecz4jygy/idsgKfW58Q=="
+  "resolved" "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.12.5.tgz"
+  "version" "0.12.5"
 
 "vue-hot-reload-api@^2.3.0":
   "integrity" "sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog=="

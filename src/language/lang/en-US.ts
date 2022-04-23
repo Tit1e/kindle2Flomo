@@ -20,8 +20,11 @@ export default  {
   'upload-file': 'Upload HTML/TXT',
   'thanks': 'Thanks for lupeng',
   'all': 'All',
+  'not-all': 'DESELECT ALL',
   'check-update': 'Check Update',
   'blog': 'Blog',
   'jike': 'JIKE',
-  'help': 'Help'
+  'help': 'Help',
+  'save': 'Save',
+  'cancel': 'Cancel',
 }

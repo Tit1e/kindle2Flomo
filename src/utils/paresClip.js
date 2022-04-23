@@ -1,4 +1,8 @@
-function isObject (obj) {
+import md5 from 'md5'
+import { dexieGet, dexieAdd } from '@/db/dexie'
+import init from '@/utils/init.js'
+
+function isObject(obj) {
   var type = typeof obj
   return type === 'function' || (type === 'object' && !!obj)
 }
@@ -33,13 +37,6 @@ var helper = {
   split_created: function (text) {
     text = text.split('|').map(i => i.trim())
     try {
-      // var re = /添加于\s+(\d{4})年(\d+)月(\d+)日.*(上|下)午(\d+):(\d+):(\d+)$/,
-      //   match = re.exec(text[1])
-      // var m7 = +match[5]
-
-      // var hours = match[4] === '上' ? m7 : m7 + 12 === 24 ? 0 : m7 + 12,
-      //   minutes = match[6],
-      //   seconds = match[7]
       var position = text[0].substr(2)
       var _position = position.replace(/[^0-9]/ig,"")
       var type = getType(position)
@@ -48,19 +45,6 @@ var helper = {
         type: type,
         position: type === 1 ? position : _position,
         note: '',
-        // date: new Date(
-        //   match[1] +
-        //     ' ' +
-        //     match[2] +
-        //     ' ' +
-        //     match[3] +
-        //     ' ' +
-        //     hours +
-        //     ':' +
-        //     minutes +
-        //     ':' +
-        //     seconds
-        // )
       }
     } catch (error) {
       return {
@@ -125,7 +109,7 @@ Block.prototype.init = function () {
 }
 
 
-function paresClip(paragraphs) {
+async function paresClip(paragraphs) {
   // 分割笔记
   paragraphs = paragraphs.split('==========').filter(i => i)
   // 将摘录与笔记分离
@@ -148,31 +132,44 @@ function paresClip(paragraphs) {
       contents[index].note = i.content
     }
   })
-  const result = []
-  contents.forEach(i => {
-    const index = result.findIndex(v => v.title === i.book)
-    if (index !== -1) {
-      result[index].texts.push({
-        text: i.content,
-        note: i.note,
-        checked: false,
-        isEdit: false
-      })
-    } else {
-      result.push({
-        title: i.book,
-        texts: [
-          {
-            text: i.content,
-            note: i.note,
-            checked: false,
-            isEdit: false
-          }
-        ]
-      })
+  const books = []
+  for (let d = 0; d < contents.length; d++) {
+    const i = contents[d]
+    const title = i.book
+    const uuid = md5(`${i.book}${i.content}`)
+    const text = i.content
+    const note = i.note
+    if (!books.includes(title)) {
+      books.push(title)
+      const uuid = md5(title)
+      const bookInfo = {
+        uuid,
+        title,
+        book: title,
+        form: 'txt',
+      }
+      const res = await dexieGet(uuid, 'books')
+      if (!res) {
+        await dexieAdd(bookInfo, 'books')
+      }
+
     }
-  })
-  return result.reverse()
+    let noteItem = {
+      uuid,
+      title,
+      text,
+      note,
+      content_update: '',
+      uploaded: false,
+      form: 'txt'
+    }
+    const res = await dexieGet(uuid)
+    if (!res) {
+      await dexieAdd(noteItem)
+    }
+  }
+  await init(books)
+  return true
 }
 
 function parse_block (texts) {

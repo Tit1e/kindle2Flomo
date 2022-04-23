@@ -30,7 +30,7 @@
               <div class="how">
                 <i class="el-icon-question"></i>
                 <a
-                  class="mr-10"
+                  class="mr-10 link"
                   href="https://mp.weixin.qq.com/s/CPIYoGItJVWJGk30MoVNXA"
                   target="_blank"
                   >{{ t('how-export') }}</a
@@ -79,6 +79,7 @@
                     </div>
                   </template>
                   <a
+                    class="link"
                     href="https://github.com/Tit1e/kindle2Flomo/releases"
                     target="_blank"
                   >
@@ -87,11 +88,11 @@
                 </el-tooltip>
               </div>
               <a
-                class="how"
+                class="how link"
                 href="https://evolly.one/2021/05/30/158-mac-handle-bad-app/"
                 target="_blank"
               >
-                Send2Flomo.app 打不开？
+                Send2flomo.app 打不开？
               </a>
             </el-form-item>
           </div>
@@ -179,18 +180,19 @@
                 </template>
                 <template v-if="bookList.length">
                   <el-form-item :label="t('book-name')">
-                    <el-input v-model="options.title"></el-input>
+                    <el-input v-model="options.book" @blur="updateBook"></el-input>
                   </el-form-item>
                   <el-form-item :label="t('book-list')" label-width="0">
                     <div class="list-wrap">
                       <el-radio-group
                         class="book-list"
-                        v-model="options.book"
+                        v-model="options.title"
                         size="small"
                         @change="selectChange"
                       >
                         <el-radio
                           v-for="item in bookList"
+                          :key="item.uuid"
                           :label="item.title"
                           border
                           >{{ item.title }}</el-radio
@@ -217,11 +219,9 @@
           "
           placement="top"
         >
-          <span style="margin-left: 10px;">
-            <el-button type="primary" :disabled="disabledSend" size="mini">{{
-              t('import')
-            }}</el-button>
-          </span>
+          <el-button type="primary" :disabled="disabledSend" size="mini">{{
+            t('import')
+          }}</el-button>
         </el-tooltip>
       </template>
       <template v-else>
@@ -263,27 +263,29 @@
 import readFile from '@/utils/readFile.js'
 import paresClip from '@/utils/paresClip.js'
 import readSQLite from '@/utils/readSQLite.js'
+import { dexiePut } from '@/db/dexie.js'
 import { ref, reactive, computed, PropType, onMounted, watch } from 'vue'
 import { ElLoading, ElMessage } from 'element-plus'
+import init from '@/utils/init.js'
 import {
   getNotebooklist,
   getBookMarkList,
   getReviewList
 } from '@/utils/weread.js'
-import { useI18n } from 'vue-i18n'
 import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 interface Text {
   text: string
   note: string
   checked: boolean
-  isEdit: boolean
 }
 interface BookData {
   title: string
   texts: Array<Text>
   bookId?: [string, number]
   loaded?: boolean
+  book: string
 }
 const $emit = defineEmits([
   'update-tag',
@@ -294,9 +296,28 @@ const $emit = defineEmits([
 const store = useStore()
 const selectedList = computed(() => store.getters.selectedList)
 const importDisabled = computed(() => store.getters.importCount >= 100)
+const bookList = computed(() => store.getters.bookList)
+// 图书列表更新自动选中第一项
+watch(() => bookList.value[0], (val, old = {}) => {
+  if(val && (val.title !== old.title)) {
+    updateData(val)
+  }
+})
+// 更新图书名称
+function updateBook(e){
+  let bookData = bookList.value.find(item => item.title === options.title)
+  if(bookData){
+    bookData = {
+      ...bookData,
+      book: e.target.value
+    }
+    delete bookData.texts
+  }
+  store.commit('UPDATE_BOOK', bookData)
+  dexiePut(bookData, 'books')
+}
 
 const isElectron = store.getters.isElectron
-const bookList = ref<Array<BookData>>([])
 let options = reactive({
   book: '',
   title: '',
@@ -342,96 +363,109 @@ watch(
   },
   { deep: true }
 )
+
+async function getWereadNotes(books, needSort = true, loadingInstance) {
+  const _books = books.reverse()
+  const {bookId, title} = _books[0]
+  const ReviewList = getReviewList({
+    title,
+    bookId,
+    listType: 11,
+    maxIdx: 0,
+    count: 0,
+    listMode: 2,
+    synckey: 0,
+    mine: 1
+  })
+  const BookMarkList = getBookMarkList(bookId, title)
+  try {
+    await Promise.all([ReviewList, BookMarkList])
+    if(!needSort){
+      await init(bookList.value.map(item => item.title).reverse(), true)
+    }else{
+      await init(_books.map(item => item.title), needSort)
+    }
+    loadingInstance.close()
+  } catch (error) {
+    console.log(error)
+    if(error.errcode === -2012){
+      importWeRead()
+    }
+    loadingInstance.close()
+  }
+}
+
 function selectChange (val: String) {
   const data = bookList.value.find(i => i.title === val)
-
   if (!data) return false
 
-  if (data.bookId && !data.loaded) {
-    const ReviewList = getReviewList({
-      bookId: data.bookId,
-      listType: 11,
-      maxIdx: 0,
-      count: 0,
-      listMode: 2,
-      synckey: 0,
-      mine: 1
-    })
-    const BookMarkList = getBookMarkList(data.bookId)
-    Promise.all([ReviewList, BookMarkList])
-      .then(([reviewList, bookMarkList]) => {
-        data.texts = [...reviewList, ...bookMarkList]
-        data.loaded = true
-        updateData(data)
-      })
-      .catch(e => {
-        console.log(e)
-      })
-  } else {
+  if (data.bookId) {
+    const loadingInstance = Loading()
+    getWereadNotes([data], false, loadingInstance)
+  }
+  updateData(data)
+}
+
+function handleBooksData (_bookList: Array<BookData>) {
+  store.commit('SET_BOOK_LIST', _bookList)
+  const data = _bookList[0]
+  if(data){
+    // 微信读书获取第一本书的内容
+    if (data.bookId) selectChange(data.title)
     updateData(data)
   }
 }
 
-function handleBooksData (_bookList: Array<BookData>) {
-  bookList.value = _bookList.reverse()
-  const data = _bookList[0]
-  if (data.bookId) selectChange(data.title)
-  options.book = data.title
-  updateData(data)
-}
-
 function updateData (data: BookData) {
-  const { title, texts, bookId } = data
+  const { title, texts, bookId, book } = data
   options.title = title
+  options.book = book
   computedTag()
   if (!texts.length && !bookId) {
     ElMessage.warning('未发现有效内容')
-  } else {
-    $emit('list-update', { list: texts, options })
-    parse(true)
   }
+  $emit('list-update', { list: texts, options })
+  parse(true)
 }
 // weread
 const showDialog = ref(false)
 const loading = ref(false)
-
-function GetNotebooklist () {
+function GetNotebooklist (loadingInstance) {
   getNotebooklist()
-    .then(res => {
+    .then(books => {
       showDialog.value = false
       loading.value = false
-      handleBooksData(res)
+      getWereadNotes(books, true, loadingInstance)
     })
     .catch(err => {
       console.log(err)
       loading.value = false
+      loadingInstance.close()
     })
 }
 function importWeRead () {
   showDialog.value = true
   loading.value = true
-  setTimeout(GetNotebooklist, 300)
+  const loadingInstance = Loading()
+  GetNotebooklist(loadingInstance)
+}
+
+function Loading (options = {}) {
+  return ElLoading.service({
+    body: true,
+    lock: true,
+    text: t('reading-notes'),
+    ...options
+  })
 }
 
 // Apple Books
 function importAppleBooks () {
-  const loadingInstance = ElLoading.service({
-    body: true,
-    lock: true,
-    text: t('reading-notes')
-  })
+  const loadingInstance = Loading()
   readSQLite()
-    .then(res => {
-      try {
-        setTimeout(() => {
-          handleBooksData(res)
-          loadingInstance.close()
-        }, 500)
-      } catch (error) {
-        loadingInstance.close()
-      }
-    })
-    .catch(e => {
+    .then(() => {
+      loadingInstance.close()
+    }).catch(e => {
       ElMessage.error(e)
       loadingInstance.close()
     })
@@ -461,60 +495,50 @@ function updateOptions () {
 const Tag = ref('')
 function computedTag () {
   let _tag = ''
-  const { tag, title, noTag } = options
+  const { tag, book, noTag } = options
   if (noTag) {
     $emit('update-tag', _tag)
     Tag.value = _tag
-    return false
+    return
   }
   if (!tag) {
-    _tag = `#${title}`
+    _tag = `#${book}`
   } else {
-    _tag = `#${tag}/${title}`
+    _tag = `#${tag}/${book}`
   }
   $emit('update-tag', _tag)
   Tag.value = _tag
 }
-function reset () {
-  bookList.value = []
-}
+
 function listenFile () {
   document.querySelector('#fileSelect input').addEventListener('change', e => {
-    reset()
+    const loadingInstance = Loading()
     const file = e.target.files[0]
     const ext = file.name
       .split('.')
       .pop()
       .toLowerCase()
     const reader = new FileReader()
-    reader.onload = () => {
-      if (ext === 'txt') {
-        bookList.value = paresClip(reader.result)
-        try {
-          const data = bookList.value[0]
-          options.book = data.title
-          updateData(data)
-        } catch (error) {}
-      }
-      if (ext === 'html') {
-        const data = readFile(reader.result)
-        bookList.value = [data]
-        options.book = data.title
-        updateData(data)
+    reader.onload = async () => {
+      try {
+        if (ext === 'txt') {
+          await paresClip(reader.result)
+        }
+        if (ext === 'html') {
+          await readFile(reader.result)
+        }
+        loadingInstance.close()
+        // updateData(data)
+      } catch (error) {
+        console.log(`txt 解析出错：${error}`)
+        loadingInstance.close()
       }
     }
     reader.readAsText(file)
   })
 }
-function exportCSV(){
-  return options.title
-}
 onMounted(() => {
   listenFile()
-})
-
-defineExpose({
-  exportCSV
 })
 </script>
 
@@ -627,8 +651,17 @@ defineExpose({
             display: none;
           }
         }
+        :deep(.el-radio.is-bordered){
+          border: none;
+        }
         :deep(.el-radio.is-bordered + .el-radio.is-bordered) {
           margin-left: 0px;
+        }
+        :deep(.el-radio.is-bordered.is-checked){
+          background-color: var(--el-color-primary);
+          .el-radio__label{
+            color: #fff;
+          }
         }
       }
     }

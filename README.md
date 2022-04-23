@@ -9,15 +9,18 @@
 [中文](./README.md) | [English](./README_en_US.md)
 
 ## 预览
-![](./screenshot/edit.png)
+![](./screenshot/home.png)
 
 ![](./screenshot/help.png)
 
+![](./screenshot/edit.png)
+
+![](./screenshot/reset.png)
 ## 注册
 ### [flomo](https://flomoapp.com/register2/?MTAzNDE)
 
 ## 网页版（仅支持 html 与 txt 格式导入）
-### [Send2Flomo](https://tit1e.github.io/kindle2Flomo/)
+### [Send2flomo](https://tit1e.github.io/kindle2Flomo/)
 
 ## Mac 应用下载
 ### [网盘下载](https://wwr.lanzoui.com/b02c3nkyf) 访问密码：47if

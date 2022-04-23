@@ -8,15 +8,16 @@ interface Options {
 }
 
 interface Text {
+  content_update: string
+  uuid: string,
+  title: string,
+  content_temp: string
+  content: string
   text: string
   note: string
   checked: boolean
-  isEdit: boolean,
-  _text?: string,
-  _tag?: string,
-  send?: boolean
+  uploaded: boolean
 }
-
 function handleTag(options: Options, tag: string, text: string){
   const {noTag, tagPosition, noEmptyLine} = options
   let _text = text
@@ -50,10 +51,10 @@ function parse (options: Options, contentList: Text[], tag: string) {
     // 如果笔记在摘录上方
     if (notePosition) textArr.reverse()
     let text = textArr.filter(i => i).join(noEmptyLine ? '' : '\r\n')
-    i._text = i.text
-    i._tag = tag
-    i.text = handleTag(options, tag, text)
-    i.send = false
+    // 最终展示的文本
+    const _content = handleTag(options, tag, text)
+    i.content = i.content_update || _content
+    i.content_temp = i.content_update || _content
     return i
   })
   return result
@@ -71,22 +72,51 @@ const date = setDate()
 const store = createStore({
   state () {
     return {
-      activeBook: {},
+      // 今日已导入数量
+      importCount: 0,
+      // 渲染的笔记数据
       textList: [],
+      // 当前图书的笔记源数据
       tempList: [],
-      importCount: 0
+      // 解析出来的图书及笔记列表
+      bookList: [],
+      parseOptions: null
     }
   },
   mutations: {
-    SET_TEXT_LIST(state: any, {options, tag}) {
-      state.textList = parse(options, state.tempList, tag)
+    UPDATE_BOOK(state:any, data) {
+      const book = state.bookList.find((i:any) => i.title === data.title)
+      book.book = data.book
     },
-    SET_TEMP_LIST(state: any, list) {
-      state.tempList = list
+    SORT_BOOK_LIST(state:any, data) {
+      if (data instanceof Array) {
+        for (let i = 0; i < data.length; i++) {
+          const item = data[i]
+          const index = state.bookList.findIndex((i: any) => i.title === item)
+          state.bookList.unshift(state.bookList.splice(index, 1)[0])
+        }
+      } else {
+        const index = state.bookList.findIndex((i: any) => i.title === data)
+        state.bookList.unshift(state.bookList.splice(index, 1)[0])
+      }
     },
-    GET_IMPORT_COUNT(state) {
-      let Obj = JSON.parse(localStorage.getItem('importCount') || '{}')
-      state.importCount = +Obj[date] || 0
+    SET_BOOK_LIST(state: any, data) {
+      state.bookList = data
+      const titleList = data.map((i:any) => i.title)
+      localStorage.setItem('bookSort', JSON.stringify(titleList))
+    },
+    UPDATE_PARSE_OPTIONS(state: any, payload) {
+      state.parseOptions = payload
+    },
+    UPDATE_TEXT_LIST(state: any, payload) {
+      const { parseOptions, bookList } = state
+      if (!bookList.length || !parseOptions) return []
+      const { options } = parseOptions
+      const tempList: any = bookList.find((i: any) => i.title === options.title)
+      if (tempList && tempList.texts) {
+        const index = tempList.texts.findIndex((i: any) => i.uuid === payload.uuid)
+        if (index >= 0) tempList.texts[index] = { ...tempList.texts[index], ...payload }
+      }
     },
     SET_IMPORT_COUNT(state, count) {
       state.importCount = count
@@ -97,24 +127,31 @@ const store = createStore({
         })
       )
     },
-    SET_SUCCESS(state, _item) {
-      const item = state.textList.find((i: Text) => i.text === _item.text)
-      item.checked = false
-      item.send = true
-    },
-    SELECT_ALL(state, status) {
-      state.textList = state.textList.map((i: Text) => {
+    SELECT_ALL({ parseOptions, bookList }, status) {
+      const book = bookList.find((i:any) => i.title === parseOptions.options.title)
+      book.texts.forEach((i:any) => {
         i.checked = status
-        return i
       })
-    }
+    },
+    GET_IMPORT_COUNT(state) {
+      let Obj = JSON.parse(localStorage.getItem('importCount') || '{}')
+      state.importCount = +Obj[date] || 0
+    },
   },
   getters: {
-    textList: state => state.textList,
-    selectedList: state => state.textList.filter((i: Text) => i.checked),
+    textList: state => {
+      const { parseOptions, bookList = [] } = state
+      if (!bookList.length || !parseOptions) return []
+      const {options, tag} = parseOptions
+      const tempList: any = bookList.find((i: any) => i.title === options.title)
+      return tempList ? parse(options, tempList.texts, tag) : []
+    },
+    bookList: state => state.bookList,
+    selectedList: (state, getters) => getters.textList.filter((i: Text) => i.checked),
     importDisabled: (state, getters) => getters.selectedList.length >= 100,
     importCount: state => state.importCount,
-    isElectron: () => !!process.env.IS_ELECTRON
+    isElectron: () => !!process.env.IS_ELECTRON,
+    parseOptions: state => state.parseOptions,
   }
 })
 

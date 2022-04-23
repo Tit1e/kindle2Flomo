@@ -20,8 +20,11 @@ export default  {
   'upload-file': '上传 HTML/TXT 文件',
   'thanks': '感谢 lupeng',
   'all': '全选',
+  'not-all': '全不选',
   'check-update': '检查更新',
   'blog': '博客',
   'jike': '即刻',
-  'help': '帮助'
+  'help': '帮助',
+  'save': '保 存',
+  'cancel': '取 消',
 }

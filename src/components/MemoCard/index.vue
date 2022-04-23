@@ -1,14 +1,16 @@
 <template>
-  <div class="memo-card radius" :class="{active: props.info.checked, empty: props.info.isEmpty, 'text-highlight': props.info.send}" @click="toggleChecked">
-    <div class="top-bar">{{index + 1}}</div>
+  <div class="memo-card radius memo-icon"
+    :class="{ active: props.info.checked, empty: props.info.isEmpty, 'uploaded': showUploaded, 'edit': showEdit, 'num-cover': showUploaded || showEdit }"
+    @click="toggleChecked">
+    <div class="num-icon" :data-index="index + 1" @click="e => resetMemo(e, props.info)">{{(showUploaded || showEdit) ? '' : index + 1}}</div>
     <div class="priview">
-      <pre v-html="props.info.text"></pre>
+      <pre v-html="info.content_update || info.content"></pre>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, toRef } from 'vue'
+import { computed } from 'vue'
 import {ElMessageBox} from 'element-plus'
 const props = defineProps({
   info: {
@@ -20,34 +22,34 @@ const props = defineProps({
     default: 0
   }
 })
-const info = props.info
-const $emit = defineEmits(['update:edit', 'update:check', 'update:input', 'open'])
-let content = toRef(props.info,'text')
-let checked = toRef(props.info, 'checked')
-let isEdit = toRef(props.info, 'isEdit')
-let send = toRef(props.info, 'send')
-const isEmpty = toRef(props.info, 'isEmpty')
-watch(
-  () => props.info,
-  ({ checked, text, isEdit }) => {
-    content = text
-    checked = checked
-    isEdit = isEdit
-  }
-)
-watch(
-  () => isEdit,
-  value => {
-    $emit('update:edit', value)
-  }
-)
-watch(
-  () => checked,
-  value => {
-    $emit('update:check', value.value)
-  },
-  {deep: true}
-)
+
+const showUploaded = computed(() => props.info.uploaded)
+const showEdit = computed(() => (!props.info.uploaded && props.info.content_update))
+
+const $emit = defineEmits(['click', 'reset'])
+
+function resetMemo(e: any, item: any) {
+  e.stopPropagation()
+  if(!item.content_update && !item.uploaded) return
+  ElMessageBox.confirm(
+    '该 memo 的内容与状态都将被还原，是否继续？',
+    '还 原',
+    {
+      closeOnClickModal: false,
+      confirmButtonText: '还 原',
+      cancelButtonText: '取 消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      $emit('reset', item)
+    })
+    .catch(() => {})
+}
+
+
+
+// 避免双击触发两次单机事件
 let timer: any = null
 let clicking = false
 function toggleChecked(){
@@ -57,16 +59,12 @@ function toggleChecked(){
   }
   timer = setTimeout(() => {
     if(!clicking){
-      checked.value = !checked.value
+      $emit('click')
     }
     clearTimeout(timer)
     clicking = false
     timer = null
   }, 200)
-}
-function submit () {
-  $emit('update:edit', false)
-  $emit('update:input', content.value)
 }
 </script>
 
@@ -79,12 +77,64 @@ function submit () {
   box-sizing: border-box;
   max-height: 300px;
   padding: 10px;
+  position: relative;
+  z-index: 0;
+  cursor: pointer;
+  .num-icon{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #fff;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 50%;
+    opacity: 0.4;
+    color: #ccc;
+    font-size: 18px;
+    font-weight: bolder;
+    z-index: 9;
+  }
+  &.memo-icon{
+    .num-icon{
+      cursor: pointer;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 18px;
+    }
+  }
+  &.uploaded{
+    cursor: not-allowed;
+    opacity: 0.6;
+    .num-icon{
+      opacity: 1;
+      background-image: url(~@/assets/img/watermark.png);
+    }
+  }
+  &.edit{
+    .num-icon{
+      opacity: 0.6;
+      background-image: url(~@/assets/img/edit.png);
+    }
+  }
+  &.num-cover.uploaded, &.num-cover.edit{
+    .num-icon:hover{
+      &::before{
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: #000000;
+        content: attr(data-index);
+      }
+    }
+  }
   .top-bar{
     line-height: 24px;
     opacity: 0.5;
-  }
-  &:hover{
-    cursor: pointer;
   }
   &.active{
     background-color: #55bb8e;
@@ -100,6 +150,8 @@ function submit () {
     margin-left: 20px;
   }
   .priview {
+    position: relative;
+    z-index: 2;
     width: 100%;
     font-size: 14px;
     user-select: none;

@@ -5,14 +5,14 @@ function getUserVid() {
   return new Promise((r, j) => {
     try {
       const { session } = require('@electron/remote')
-      session.defaultSession.cookies.get({ url: 'https://weread.qq.com/' }).then(res => {
+      session.defaultSession.cookies.get({ url: 'https://weread.qq.com' }).then(res => {
         if (res && res.length) {
           const vid = res.find(i => i.name === 'wr_vid')
           if (vid) r(vid.value)
           j(false)
         }
         j(false)
-      })
+      }).catch(() => j(false))
     } catch (error) {
       console.log(error)
       j(false)

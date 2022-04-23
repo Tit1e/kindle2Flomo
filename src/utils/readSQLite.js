@@ -1,9 +1,12 @@
+import { dexieGet, dexieAdd } from '@/db/dexie'
+import md5 from 'md5'
+import init from '@/utils/init.js'
 let fs = {}
 let os = {}
 let bplist = {}
 let db = function () {}
 let readSQLite = function () {
-  return Promise.resolve([])
+  return Promise.resolve(true)
 }
 // electron 环境才加载模块
 if (process.env.IS_ELECTRON) {
@@ -39,7 +42,7 @@ if (process.env.IS_ELECTRON) {
           FROM ZAEANNOTATION
           WHERE ZANNOTATIONSELECTEDTEXT IS NOT NULL
           AND ZANNOTATIONDELETED = 0
-          ORDER BY ZANNOTATIONASSETID ASC, ZPLLOCATIONRANGESTART ASC
+          ORDER BY ZANNOTATIONASSETID ASC
         `,
         async function (err, res) {
           if (!err) {
@@ -47,55 +50,62 @@ if (process.env.IS_ELECTRON) {
             let plistData = {}
             let books = []
             try {
+              // 获取图书列表并添加至数据库
               const tmpData = await bplist.parseFile(plistPath)
               plistData = tmpData[0]
-              books = plistData.Books
+              if (plistData && plistData.Books && plistData.Books.length) {
+                books = plistData.Books
+                for (let i = 0; i < plistData.Books.length; i++) {
+                  const {itemName} = plistData.Books[i]
+                  const title = itemName
+                  const uuid = md5(title)
+                  let bookInfo = {
+                    uuid,
+                    title,
+                    book: title,
+                    form: 'applebooks',
+                  }
+                  const res = await dexieGet(uuid, 'books')
+                  if (!res) {
+                    await dexieAdd(bookInfo, 'books')
+                  }
+                }
+              }
             } catch (error) {
               console.log(error)
               reject('图书列表解析出错')
             }
-
-            try {
-              res.forEach(i => {
-                const index = books.findIndex(
-                  v => v.BKGeneratedItemId === i.ZANNOTATIONASSETID
-                )
-                if (index >= 0) {
-                  const data = {
-                    text: i.SelectedText,
-                    note: i.Note,
-                    checked: false,
-                    isEdit: false
-                  }
-                  try {
-                    books[index].texts.push(data)
-                  } catch (error) {
-                    books[index].texts = []
-                    books[index].texts.push(data)
-                  }
-                }
-              })
-            } catch (error) {
-              console.log(error)
-            }
             if (res.length) {
-              resolve(
-                books.filter(i => i.texts).map(j => {
-                  return {
-                    title: j.BKDisplayName,
-                    texts: j.texts
+              try {
+                for (let d = 0; d < res.length; d++) {
+                  const i = res[d]
+                  const index = books.findIndex( v => v.BKGeneratedItemId === i.ZANNOTATIONASSETID)
+                  if (index > -1) {
+                    const title = books[index].itemName
+                    const text = i.SelectedText
+                    const note = i.Note || ''
+                    const uuid = md5(`${title}${text}`)
+                    let noteItem = {
+                      uuid,
+                      title,
+                      text,
+                      note,
+                      content_update: '',
+                      uploaded: false,
+                      form: 'applebooks'
+                    }
+                    const res = await dexieGet(uuid)
+                    if (!res) {
+                      await dexieAdd(noteItem)
+                    }
                   }
-                })
-              )
-            }
-            resolve(
-              books.map(b => {
-                return {
-                  title: b.BKDisplayName,
-                  texts: []
                 }
-              })
-            )
+              } catch (error) {
+                console.log(error)
+              }
+            }
+            await init(books.map(i => i.itemName))
+            resolve(true)
           } else {
             reject('笔记解析出错')
           }

@@ -7,24 +7,22 @@
             未经审视的生活不值得过，未经审视的思想也不应该汇入你的大脑。建议在导入前审视一遍内容。
           </div>
         </template>
-        <el-button type="text" class="mr-10" @click="selectedAll(true)">{{t('all')}}</el-button>
+        <el-button type="text" class="mr-10" @click="toggleSelectedAll">{{t(selectAll ? 'not-all' : 'all')}}</el-button>
       </el-tooltip>
-      已选择 <span class="highlight">{{ selectedNum }}</span> 条 MEMO，共
-      <span class="highlight">{{ total }}</span> 条。今日已导入
-      <span class="highlight">{{ importCount }} / 100</span> 条 MEMO
+      已选择 <span class="highlight">{{ selectedNum }}</span> 条，共
+      <span class="highlight">{{ total }}</span> 条。已导入
+      <span class="highlight">{{ importCount }} / 100</span>
     </div>
     <div class="bar-right">
-      <div class="thanks" v-if="isElectron" @click="openUrl('https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg')">
-        {{t('thanks')}}
-      </div>
-      <a class="thanks" v-else href="https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg" target="_blank">{{t('thanks')}}</a>
-      <el-tooltip
-          effect="dark"
-          placement="bottom"
-          content="导出 CSV 文件"
-        >
-        <div class="export k-icon" @click="exportCSV"></div>
-      </el-tooltip>
+      <el-dropdown @command="handleExport">
+        <div class="export k-icon"></div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="markdown">导出 Markdown</el-dropdown-item>
+            <el-dropdown-item command="csv">导出 CSV</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
       <el-tooltip
           effect="dark"
           placement="bottom"
@@ -32,11 +30,11 @@
           <template #content>
             <div class="help-box">
               <div class="mb-10">注意事项：</div>
-              <div class="mb-6">1. 导入前必须填写 Api 与选择要导入的 MEMO</div>
-              <div class="mb-6">2. 双击 MEMO 可进入编辑状态</div>
-              <div class="mb-6">3. 修改配置项会触发解析</div>
-              <div class="mb-6">4. 每次解析重置 MEMO 的内容，因此先设置好配置项再进行编辑</div>
-              <div class="mb-6" v-if="isElectron">5. 在使用微信读书导入过程中请勿手动刷新页面，会导致获取不到笔记，如果刷新了，请退出应用后重新打开。</div>
+              <div class="mb-6">1. 导入前必须填写 Api 与选择要导入的笔记</div>
+              <div class="mb-6">2. 双击笔记可进入编辑状态，编辑过的笔记右下角显示编辑图标</div>
+              <div class="mb-6">3. 已导入的笔记右下角显示 flomo 图标，且不可再编辑</div>
+              <div class="mb-6">4. 点击右下角图标可还原内容，重置笔记状态</div>
+              <div class="mb-6">5. 已导入或编辑过的笔记将不再参与格式调整，如需调整请先重置笔记状态</div>
               <div class="mb-10">还有其他问题？扫码进群反馈</div>
               <img
                 class="block block-center"
@@ -61,7 +59,7 @@
           <el-dropdown-menu>
             <template v-if="isElectron">
               <el-dropdown-item command="update">{{t('check-update')}}</el-dropdown-item>
-              <el-dropdown-item command="blog">
+              <el-dropdown-item command="blog" divided>
                 {{t('blog')}}
               </el-dropdown-item>
               <el-dropdown-item command="photo">
@@ -70,6 +68,7 @@
               <el-dropdown-item command="jike">
                 {{t('jike')}}
               </el-dropdown-item>
+              <el-dropdown-item command="thank" divided>{{t('thanks')}}</el-dropdown-item>
             </template>
             <template v-else>
               <el-dropdown-item
@@ -89,6 +88,9 @@
                 >
                   {{t('jike')}}
                 </a>
+              </el-dropdown-item>
+              <el-dropdown-item divided>
+                <a href="https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg" target="_blank" rel="noopener noreferrer">{{t('thanks')}}</a>
               </el-dropdown-item>
             </template>
           </el-dropdown-menu>
@@ -110,20 +112,20 @@ let shell = {}
 if(isElectron){
   shell = require('@electron/remote').shell
   ipcRenderer = require('electron').ipcRenderer
-
 }
 
-const $emit = defineEmits([
-  'export',
-])
+const $emit = defineEmits([ 'export' ])
 
-function exportCSV(){
-  $emit('export')
+
+const selectAll = ref(false)
+
+function toggleSelectedAll(){
+  selectAll.value = !selectAll.value
+  store.commit('SELECT_ALL', selectAll.value)
 }
 
-
-function selectedAll(status = true){
-  store.commit('SELECT_ALL', status)
+function handleExport(command: string){
+  $emit('export', command)
 }
 
 
@@ -148,15 +150,14 @@ const urlMap = {
   blog: 'https://evolly.one/',
   photo: 'https://album.animalcrossing.life/',
   jike: 'https://web.okjike.com/u/FFDB1E46-63DC-43BE-AA1A-36F3D9CD0017',
+  thank: 'https://mp.weixin.qq.com/s/o793lUsBaWc61fLZzFDlxg'
 }
+
 function handleCommand(type: string){
   if(isElectron){
-    if(type === 'update'){
-      ipcRenderer.on('asynchronous-reply', (event, arg) => {
-        console.log(arg) // prints "pong"
-      })
+    if(type === 'update') {
       ipcRenderer.send('update')
-    }else{
+    } else {
       openUrl(urlMap[type])
     }
   }

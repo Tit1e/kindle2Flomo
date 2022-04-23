@@ -15,7 +15,7 @@ module.exports = {
       electronDownload: {
         mirror: "https://npm.taobao.org/mirrors/electron/"
       },
-      productName: 'SendToFlomo',
+      productName: 'SendToflomo',
       nodeIntegration: true,
       builderOptions: {
         // 设置打包之后的应用名称
