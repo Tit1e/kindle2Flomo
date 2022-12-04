@@ -70,7 +70,7 @@ export default function checkUpdate (mainWindow) {
     dialog.showMessageBox({
         type: 'info',
         title: '应用更新',
-        message: '下载完成，是否立即更新？',
+        message: '下载完成，是否立即更新？\n\r如更新失败，请前往 GitHub 或网盘下载最新版手动更新',
         buttons: ['立即更新', '以后再说']
       })
       .then(buttonIndex => {

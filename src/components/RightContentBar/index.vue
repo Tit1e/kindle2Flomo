@@ -161,7 +161,7 @@ let loadingInstance: any = null
 if(isElectron){
   ipcRenderer.on('updateDownloading', async(event, info) => {
     if(info === 'updateDownloaded'){
-      loadingInstance.close()
+      if(loadingInstance) loadingInstance.close()
       await nextTick()
       loadingInstance = null
     }else{
@@ -174,7 +174,7 @@ if(isElectron){
         })
       }
       const percent = info.percent.toFixed(2)
-      loadingInstance.setText(`正在下载... ${percent}%`)
+      if( loadingInstance )loadingInstance.setText(`正在下载... ${percent}%`)
     }
   })
 

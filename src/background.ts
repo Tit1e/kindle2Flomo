@@ -9,6 +9,7 @@ const isPackaged = app.isPackaged
 // const ___ = app.getPath('userData')
 // console.log(___)
 
+
 remoteMain.initialize()
 const isDevelopment = process.env.NODE_ENV !== 'production'
 protocol.registerSchemesAsPrivileged([
@@ -82,7 +83,7 @@ function setMenu(mainWindow) {
           label: '打开控制台',
           accelerator: 'F12',
           click () {
-            mainWindow.webContents.openDevTools()
+            mainWindow.webContents.openDevTools() 
           }
         },
         {
@@ -141,7 +142,7 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
-  // setMenu(win)
+  setMenu(win)
   remoteMain.enable(win.webContents)
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
