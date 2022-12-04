@@ -1,7 +1,7 @@
 export default  {
   'parse': 'Parse',
   'how-export': 'How to export HTML?',
-  'where-is--my-clippings': 'Where is My Clippings.txt?',
+  'questions-and-answers': 'Questions and Answers',
   'weread': 'WeRead',
   'parse-options': 'Parse Options',
   'hide-tag': 'Hide Tag',
@@ -17,7 +17,7 @@ export default  {
   'tag-options': 'Tag Options',
   'notes-options': 'Notes Options',
   'reading-notes': 'reading',
-  'upload-file': 'Upload HTML/TXT',
+  'upload-file': 'Upload HTML/TXT/JSON',
   'thanks': 'Thanks for lupeng',
   'all': 'All',
   'not-all': 'DESELECT ALL',
