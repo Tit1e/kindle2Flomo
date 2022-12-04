@@ -76,7 +76,7 @@ export default function checkUpdate (mainWindow) {
       .then(buttonIndex => {
         if (buttonIndex.response == 0) {
           //选择是，则退出程序，安装新版本
-          autoUpdater.quitAndInstall(true, true)
+          autoUpdater.quitAndInstall()
         }
       })
   })

@@ -141,7 +141,7 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
-  setMenu(win)
+  // setMenu(win)
   remoteMain.enable(win.webContents)
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

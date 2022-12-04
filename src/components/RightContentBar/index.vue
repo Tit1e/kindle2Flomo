@@ -40,7 +40,7 @@
                 class="block block-center"
                 width="200"
                 height="200"
-                src="https://gblobscdn.gitbook.com/assets%2F-MVEe4qiW5TBO3wosktr%2F-McqOyO9scmhvjxOKjqy%2F-McqT6ENIJnzZEGJhoeX%2F%E5%9B%BE%E7%89%87.png?alt=media&token=a1a523d4-f926-4615-b1de-b6fced4c46ab"
+                src="~@/assets/img/qrcode.png"
               />
             </div>
           </template>
