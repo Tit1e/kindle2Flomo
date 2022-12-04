@@ -104,13 +104,12 @@
 import { ref, toRefs, nextTick, onMounted, computed } from 'vue'
 import { ElLoading } from 'element-plus'
 import { useI18n } from 'vue-i18n'
-import {useStore} from 'vuex'
+import { useStore } from 'vuex'
+import { openUrl } from '@/utils/utils.js'
 const store = useStore()
 const isElectron = store.getters.isElectron
 let ipcRenderer = {}
-let shell = {}
 if(isElectron){
-  shell = require('@electron/remote').shell
   ipcRenderer = require('electron').ipcRenderer
 }
 
@@ -140,12 +139,6 @@ const selectedNum = computed(() =>store.getters.selectedList.length)
 const total = computed(() =>store.getters.textList.length)
 const importCount = computed(() =>store.getters.importCount)
 
-function openUrl(url: string = ''){
-  if(!url) return false
-  if(isElectron){
-    shell.openExternal(url)
-  }
-}
 const urlMap = {
   blog: 'https://evolly.one/',
   photo: 'https://album.animalcrossing.life/',

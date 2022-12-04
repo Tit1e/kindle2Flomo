@@ -41,6 +41,10 @@ body {
     }
   }
 
+  .underline{
+    text-decoration: underline;
+  }
+
   .disabled {
     cursor: not-allowed !important;
   }
@@ -77,6 +81,10 @@ body {
 
   .text-highlight{
     color: #55bb8e;
+  }
+
+  .bold{
+    font-weight: bold;
   }
 
   .highlight {
@@ -129,6 +137,21 @@ body {
     flex-grow: 1;
   }
 
+  .pb-4 {
+    padding-bottom: 4px;
+  }
+  .pb-6 {
+    padding-bottom: 6px;
+  }
+
+  .pb-8 {
+    padding-bottom: 8px;
+  }
+
+  .pb-16 {
+    padding-bottom: 16px;
+  }
+
   .pd-10 {
     padding: 10px;
   }
@@ -148,6 +171,8 @@ body {
   .pb-10 {
     padding-bottom: 10px;
   }
+
+
   .mr-4{
     margin-right: 4px;
   }

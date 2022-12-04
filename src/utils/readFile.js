@@ -46,7 +46,7 @@ async function readFile (sourceText) {
         note,
         content_update: '',
         uploaded: false,
-        from: 'html'
+        from: 'kindle'
       }
       const res = await dexieGet(uuid)
       // 数据已存在直接返回数据
@@ -60,7 +60,7 @@ async function readFile (sourceText) {
     uuid,
     title,
     book: title,
-    from: 'html'
+    from: 'kindle'
   }
   const res = await dexieGet(uuid, 'books')
   if (!res) {

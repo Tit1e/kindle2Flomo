@@ -18,7 +18,7 @@
                 :multiple="false"
                 action=""
                 :auto-upload="false"
-                accept=".html,.txt"
+                accept=".html,.txt,.json"
               >
                 <div class="upload-content radius flex pd-10 border">
                   <i class="el-icon-folder-add"></i>
@@ -29,24 +29,33 @@
               </el-upload>
               <div class="how">
                 <i class="el-icon-question"></i>
-                <a
-                  class="mr-10 link"
-                  href="https://mp.weixin.qq.com/s/CPIYoGItJVWJGk30MoVNXA"
-                  target="_blank"
-                  >{{ t('how-export') }}</a
-                >
                 <el-tooltip effect="dark" placement="right">
                   <template #content>
                     <div>
                       <div class="pb-10">
-                        将 Kindle 通过数据线连接至电脑
+                        <span class="bold text-highlight">JSON:</span> KOReader 导出的 JSON 文件
                       </div>
-                      <div>
+                      <div class="pb-10">
+                        <span class="bold text-highlight">HTML:</span> Kindle 或 Kindle App 导出的 HTML 文件
+                      </div>
+                      <div class="pb-16">
+                        <span class="bold text-highlight">TXT:</span> Kindle 的 My Clippings.txt 文件
+                      </div>
+                      <div class="pb-6 bold text-highlight">
+                        My Clippings.txt 在哪？
+                      </div>
+                      <div class="pb-16">
+                        <div class="pb-4">
+                          将 Kindle 通过数据线连接至电脑
+                        </div>
                         文件位于：Kindle根目录 - document - My Clippings.txt
+                      </div>
+                      <div class="link pointer underline bold text-highlight" @click="openUrl('https://mp.weixin.qq.com/s/CPIYoGItJVWJGk30MoVNXA')">
+                        {{ t('how-export') }}
                       </div>
                     </div>
                   </template>
-                  <span class="pointer">{{ t('where-is--my-clippings') }}</span>
+                  <span class="pointer">{{ t('questions-and-answers') }}</span>
                 </el-tooltip>
               </div>
             </el-form-item>
@@ -261,12 +270,15 @@
 
 <script setup lang="ts">
 import readFile from '@/utils/readFile.js'
+import readJSON from '@/utils/readJSON.js'
 import paresClip from '@/utils/paresClip.js'
 import readSQLite from '@/utils/readSQLite.js'
 import { dexiePut } from '@/db/dexie.js'
 import { ref, reactive, computed, PropType, onMounted, watch } from 'vue'
 import { ElLoading, ElMessage } from 'element-plus'
 import init from '@/utils/init.js'
+import { openUrl } from '@/utils/utils.js'
+
 import {
   getNotebooklist,
   getBookMarkList,
@@ -421,9 +433,6 @@ function updateData (data: BookData) {
   options.title = title
   options.book = book
   computedTag()
-  if (!texts.length && !bookId) {
-    ElMessage.warning('未发现有效内容')
-  }
   $emit('list-update', { list: texts, options })
   parse(true)
 }
@@ -526,6 +535,9 @@ function listenFile () {
         }
         if (ext === 'html') {
           await readFile(reader.result)
+        }
+        if (ext === 'json') {
+          await readJSON(reader.result)
         }
         loadingInstance.close()
         // updateData(data)

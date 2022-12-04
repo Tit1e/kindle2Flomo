@@ -146,7 +146,7 @@ async function paresClip(paragraphs) {
         uuid,
         title,
         book: title,
-        form: 'txt',
+        from: 'kindle',
       }
       const res = await dexieGet(uuid, 'books')
       if (!res) {
@@ -161,7 +161,7 @@ async function paresClip(paragraphs) {
       note,
       content_update: '',
       uploaded: false,
-      form: 'txt'
+      from: 'kindle'
     }
     const res = await dexieGet(uuid)
     if (!res) {

@@ -56,10 +56,7 @@ const $emit = defineEmits([
 ])
 
 function handleExport(command: string){
-  if(!contentList.value.length) {
-    ElMessage.warning('未发现内容')
-    return false
-  }
+  if(!contentList.value.length) return false
   switch(command){
     case 'markdown':
       exportMD()

@@ -38,6 +38,7 @@ if (process.env.IS_ELECTRON) {
               ZFUTUREPROOFING5 as Chapter,
               ZANNOTATIONCREATIONDATE as Created,
               ZANNOTATIONMODIFICATIONDATE as Modified,
+              ZANNOTATIONLOCATION as Localtion,
               ZANNOTATIONASSETID
           FROM ZAEANNOTATION
           WHERE ZANNOTATIONSELECTEDTEXT IS NOT NULL
@@ -45,6 +46,7 @@ if (process.env.IS_ELECTRON) {
           ORDER BY ZANNOTATIONASSETID ASC
         `,
         async function (err, res) {
+          console.log(res)
           if (!err) {
             const plistPath = `${homedir}/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/Books.plist`
             let plistData = {}
@@ -56,6 +58,7 @@ if (process.env.IS_ELECTRON) {
               if (plistData && plistData.Books && plistData.Books.length) {
                 books = plistData.Books
                 for (let i = 0; i < plistData.Books.length; i++) {
+                  console.log(plistData.Books[i])
                   const {itemName} = plistData.Books[i]
                   const title = itemName
                   const uuid = md5(title)
@@ -63,7 +66,7 @@ if (process.env.IS_ELECTRON) {
                     uuid,
                     title,
                     book: title,
-                    form: 'applebooks',
+                    from: 'applebooks',
                   }
                   const res = await dexieGet(uuid, 'books')
                   if (!res) {
@@ -84,15 +87,19 @@ if (process.env.IS_ELECTRON) {
                     const title = books[index].itemName
                     const text = i.SelectedText
                     const note = i.Note || ''
+                    const localtion = i.Localtion || ''
+                    const assetid = i.ZANNOTATIONASSETID || ''
                     const uuid = md5(`${title}${text}`)
                     let noteItem = {
                       uuid,
                       title,
                       text,
                       note,
+                      localtion,
+                      assetid,
                       content_update: '',
                       uploaded: false,
-                      form: 'applebooks'
+                      from: 'applebooks'
                     }
                     const res = await dexieGet(uuid)
                     if (!res) {
