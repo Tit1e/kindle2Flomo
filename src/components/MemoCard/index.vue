@@ -1,7 +1,9 @@
 <template>
   <div class="memo-card radius memo-icon"
-    :class="{ active: props.info.checked, empty: props.info.isEmpty, 'uploaded': showUploaded, 'edit': showEdit, 'num-cover': showUploaded || showEdit }"
-    @click="toggleChecked">
+  :class="{ active: props.info.checked, empty: props.info.isEmpty, 'uploaded': showUploaded, 'edit': showEdit, 'num-cover': showUploaded || showEdit }"
+  @click="toggleChecked">
+    <a v-if="(info.assetid && info.localtion)" :href="`ibooks://assetid/${info.assetid}#${info.localtion}`" class="book-mark" @click.stop title="在 Apple Books 中查看">
+    </a>
     <div class="num-icon" :data-index="index + 1" @click="e => resetMemo(e, props.info)">{{(showUploaded || showEdit) ? '' : index + 1}}</div>
     <div class="priview">
       <pre v-html="info.content_update || info.content"></pre>
@@ -80,6 +82,23 @@ function toggleChecked(){
   position: relative;
   z-index: 0;
   cursor: pointer;
+  &:hover{
+    .book-mark{
+      opacity: 1;
+      transition: ease-in-out 350ms;
+    }
+  }
+  .book-mark{
+    position: absolute;
+    z-index: 10;
+    width: 26px;
+    height: 26px;
+    opacity: 0;
+    top: 10px;
+    right: 10px;
+    background-image: url(~@/assets/img/applebooks.png);
+    background-size: 100%;
+  }
   .num-icon{
     position: absolute;
     bottom: 10px;
