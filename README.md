@@ -4,7 +4,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;
 [![](https://img.shields.io/badge/即刻-@直走的螃蟹-FFE440.svg)](https://web.okjike.com/u/FFDB1E46-63DC-43BE-AA1A-36F3D9CD0017)
 
-### 将 Kindle、Apple Books、微信阅读笔记一键导入至 flomo
+### 将 Kindle、Apple Books、KOReader、微信阅读笔记一键导入至 flomo
 
 [中文](./README.md) | [English](./README_en_US.md)
 
