@@ -1,6 +1,6 @@
 # Send2flomo
 
-[![kindle2flomo downloads](https://img.shields.io/github/downloads/Tit1e/kindle2Flomo/total.svg?style=flat-square)](https://github.com/Tit1e/kindle2Flomo)
+![kindle2flomo downloads](https://img.shields.io/github/downloads/Tit1e/kindle2Flomo/total)
 &nbsp;&nbsp;&nbsp;&nbsp;
 ![](https://img.shields.io/badge/license-GPL-green.svg)
 &nbsp;&nbsp;&nbsp;&nbsp;
