@@ -20,6 +20,7 @@
           <el-dropdown-menu>
             <el-dropdown-item command="markdown">导出 Markdown</el-dropdown-item>
             <el-dropdown-item command="csv">导出 CSV</el-dropdown-item>
+            <el-dropdown-item command="alldata">导出 所有数据</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>

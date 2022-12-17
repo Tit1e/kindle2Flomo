@@ -46,6 +46,8 @@ import { dexiePut } from '@/db/dexie'
 import { delField } from '@/utils/utils'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
+import exportAllData from '@/utils/exportAllData.js'
+
 const { t } = useI18n()
 
 const store = useStore()
@@ -56,13 +58,17 @@ const $emit = defineEmits([
 ])
 
 function handleExport(command: string){
-  if(!contentList.value.length) return false
   switch(command){
     case 'markdown':
+      if(!contentList.value.length) return false
       exportMD()
       break
     case 'csv':
+      if(!contentList.value.length) return false
       exportCSV()
+      break
+    case 'alldata':
+      exportAllData()
       break
   }
 }

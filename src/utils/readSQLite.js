@@ -46,7 +46,6 @@ if (process.env.IS_ELECTRON) {
           ORDER BY ZANNOTATIONASSETID ASC
         `,
         async function (err, res) {
-          console.log(res)
           if (!err) {
             const plistPath = `${homedir}/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/Books.plist`
             let plistData = {}
@@ -58,7 +57,6 @@ if (process.env.IS_ELECTRON) {
               if (plistData && plistData.Books && plistData.Books.length) {
                 books = plistData.Books
                 for (let i = 0; i < plistData.Books.length; i++) {
-                  console.log(plistData.Books[i])
                   const {itemName} = plistData.Books[i]
                   const title = itemName
                   const uuid = md5(title)
