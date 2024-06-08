@@ -366,8 +366,7 @@ export default {
             listMode: 2,
             synckey: 0,
             mine: 1
-          },
-          this.cookie
+          }
         )
         const BookMarkList = getBookMarkList(data.bookId)
         Promise.all([ReviewList, BookMarkList]).then(([reviewList, bookMarkList]) => {

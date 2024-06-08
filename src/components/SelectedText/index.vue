@@ -106,8 +106,8 @@ export default {
   background-color: rgba($color: #ffffff, $alpha: 0.5);
   margin-bottom: 10px;
   font-weight: bold;
-  align-items: center;
   font-size: 15px;
+  align-items: center;
   .thanks {
     color: inherit;
     padding-left: 10px;

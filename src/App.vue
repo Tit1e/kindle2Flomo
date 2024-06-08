@@ -68,7 +68,6 @@ export default {
     SelectedText,
     draggable
   },
-  filters: {},
   data () {
     return {
       date: '',

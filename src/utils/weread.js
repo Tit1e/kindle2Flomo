@@ -61,7 +61,7 @@ export function getBookMarkList(bookId) {
   })
 }
 
-export function getReviewList(params, ) {
+export function getReviewList(params) {
   return new Promise((resolve, reject) => {
     get_reviewlist(params).then(res => {
       let list = res.reviews.map(i => {
