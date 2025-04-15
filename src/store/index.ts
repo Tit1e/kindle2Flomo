@@ -4,7 +4,8 @@ interface Options {
   tagPosition: any,
   noEmptyLine: any,
   split: any,
-  notePosition: any
+  notePosition: any,
+  showPosition: any
 }
 
 interface Text {
@@ -17,6 +18,8 @@ interface Text {
   note: string
   checked: boolean
   uploaded: boolean
+  pageInfo?: string
+  locationInfo?: string
 }
 function handleTag(options: Options, tag: string, text: string){
   const {noTag, tagPosition, noEmptyLine} = options
@@ -40,16 +43,26 @@ function parse (options: Options, contentList: Text[], tag: string) {
     tagPosition,
     notePosition,
     noEmptyLine,
-    noTag
+    noTag,
+    showPosition
   } = options
   // 渲染用的tag
   const result = JSON.parse(JSON.stringify(contentList)).map((i:Text) => {
+    const positionInfo = []
+    if (showPosition) {
+      if (i.pageInfo) positionInfo.push(i.pageInfo)
+      if (i.locationInfo) positionInfo.push(i.locationInfo)
+      //
+    }
+    const positionInfoText = positionInfo.length > 0 ? `\r\n${positionInfo.join(' | ')}\r\n` : ''
     const _text = `${i.text}\r\n`
     // 有笔记并且分隔符有内容时才换行
     const _split = i.note ? `${split}${split || noEmptyLine ? '\r\n' : ''}` : ''
     let textArr = i.note ? [_text, _split, `${i.note}\r\n`] : [_text, _split]
     // 如果笔记在摘录上方
     if (notePosition) textArr.reverse()
+    // 增加摘录位置信息在下方
+    textArr.push(positionInfoText)
     let text = textArr.filter(i => i).join(noEmptyLine ? '' : '\r\n')
     // 最终展示的文本
     const _content = handleTag(options, tag, text)

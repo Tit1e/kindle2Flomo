@@ -13,7 +13,7 @@ module.exports = {
           publishAutoUpdate: true // 发布自动更新（需要配置GH_TOKEN）。 默认true
       },
       electronDownload: {
-        mirror: "https://npm.taobao.org/mirrors/electron/"
+        mirror: "https://npmmirror.com/mirrors/electron/"
       },
       productName: 'SendToflomo',
       nodeIntegration: true,

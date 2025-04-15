@@ -21,6 +21,7 @@
             <el-dropdown-item command="markdown">导出 Markdown</el-dropdown-item>
             <el-dropdown-item command="csv">导出 CSV</el-dropdown-item>
             <el-dropdown-item command="alldata">导出 所有数据</el-dropdown-item>
+            <el-dropdown-item command="cleardata" divided style="color: #F56C6C;">清除所有数据</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -103,10 +104,12 @@
 
 <script setup lang="ts">
 import { ref, toRefs, nextTick, onMounted, computed } from 'vue'
-import { ElLoading } from 'element-plus'
+import { ElLoading, ElMessageBox } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useStore } from 'vuex'
 import { openUrl } from '@/utils/utils.js'
+import { dexieClearAll } from '@/db/dexie'
+import init from '@/utils/init.js'
 const store = useStore()
 const isElectron = store.getters.isElectron
 let ipcRenderer = {}
@@ -125,7 +128,53 @@ function toggleSelectedAll(){
 }
 
 function handleExport(command: string){
-  $emit('export', command)
+  switch(command){
+    case 'markdown':
+      if(!contentList.value.length) return false
+      $emit('export', command)
+      break
+    case 'csv':
+      if(!contentList.value.length) return false
+      $emit('export', command)
+      break
+    case 'alldata':
+      $emit('export', command)
+      break
+    case 'cleardata':
+      ElMessageBox.confirm(
+        '此操作将清除所有导入的书籍和笔记数据，是否继续？',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(async () => {
+        const loadingInstance = ElLoading.service({
+          text: '正在清除数据...',
+          lock: true
+        })
+        try {
+          await dexieClearAll()
+          // 清空状态
+          store.commit('SET_BOOK_LIST', [])
+          store.commit('UPDATE_PARSE_OPTIONS', null)
+          loadingInstance.close()
+          ElMessageBox.alert('所有数据已清除', '成功', {
+            confirmButtonText: '确定',
+            type: 'success'
+          })
+        } catch (error) {
+          console.error(error)
+          loadingInstance.close()
+          ElMessageBox.alert('清除数据失败', '错误', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+        }
+      }).catch(() => {})
+      break
+  }
 }
 
 
@@ -139,6 +188,7 @@ store.commit('GET_IMPORT_COUNT')
 const selectedNum = computed(() =>store.getters.selectedList.length)
 const total = computed(() =>store.getters.textList.length)
 const importCount = computed(() =>store.getters.importCount)
+const contentList = computed(() => store.getters.textList)
 
 const urlMap = {
   blog: 'https://evolly.one/',

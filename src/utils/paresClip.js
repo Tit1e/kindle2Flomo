@@ -1,6 +1,6 @@
-import md5 from 'md5'
-import { dexieGet, dexieAdd } from '@/db/dexie'
+import { dexieAdd, dexieGet } from '@/db/dexie'
 import init from '@/utils/init.js'
+import md5 from 'md5'
 
 function isObject(obj) {
   var type = typeof obj
@@ -33,23 +33,57 @@ export function getType(position) {
   return 2
 }
 
+
+
 var helper = {
+
   split_created: function (text) {
-    text = text.split('|').map(i => i.trim())
+    // 将文本按"|"分割
+    var parts = text.split('|').map(i => i.trim())
     try {
-      var position = text[0].substr(2)
+      var position = parts[0].substr(2)
       var _position = position.replace(/[^0-9]/ig,"")
       var type = getType(position)
+
+      // 新增：提取页码和位置信息
+      var pageInfo = ''
+      var locationInfo = ''
+
+      // 遍历所有部分查找页码和位置信息
+      for (var i = 0; i < parts.length; i++) {
+        var part = parts[i]
+
+        // 检查是否包含page信息
+        if (part.indexOf('page') !== -1) {
+          var pageMatch = part.match(/page\s+(\d+)/i)
+          if (pageMatch && pageMatch[1]) {
+            pageInfo = 'Page ' + pageMatch[1]
+          }
+        }
+
+        // 检查是否包含Location信息
+        if (part.indexOf('Location') !== -1) {
+          var locationMatch = part.match(/Location\s+(\d+-\d+|\d+)/i)
+          if (locationMatch && locationMatch[1]) {
+            locationInfo = 'Location ' + locationMatch[1]
+          }
+        }
+      }
+
       // 笔记的 position 为纯数字
       return {
         type: type,
         position: type === 1 ? position : _position,
+        pageInfo: pageInfo,
+        locationInfo: locationInfo,
         note: '',
       }
     } catch (error) {
       return {
         note: '',
         position: '',
+        pageInfo: '',
+        locationInfo: '',
         date: ''
       }
     }
@@ -83,6 +117,8 @@ function Block (texts) {
   this.content = ''
   this.texts = texts
   this.type = ''
+  this.pageInfo = ''
+  this.locationInfo = ''
 
   this.init()
 }
@@ -159,6 +195,8 @@ async function paresClip(paragraphs) {
       title,
       text,
       note,
+      pageInfo: i.pageInfo || '',
+      locationInfo: i.locationInfo || '',
       content_update: '',
       uploaded: false,
       from: 'kindle'
