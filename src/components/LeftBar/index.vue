@@ -169,6 +169,12 @@
                     <el-radio-button :label="false">摘录下方</el-radio-button>
                   </el-radio-group>
                 </el-form-item>
+                <el-form-item label="位置信息">
+                  <el-radio-group v-model="options.showPosition">
+                    <el-radio-button :label="true">显示</el-radio-button>
+                    <el-radio-button :label="false">隐藏</el-radio-button>
+                  </el-radio-group>
+                </el-form-item>
                 <el-form-item label="分隔符">
                   <el-input
                     v-model="options.split"
@@ -341,6 +347,7 @@ let options = reactive({
   tagPosition: false,
   notePosition: false,
   noEmptyLine: true,
+  showPosition: true,
 })
 
 let activeName = ref('1')
@@ -355,6 +362,23 @@ watch(
 const disabledSend = computed(
   () => !selectedList.value.length || !options.api || importDisabled.value
 )
+
+function initOptions () {
+  try {
+    const optionsData = JSON.parse(localStorage.getItem('options'))
+    if (optionsData && Object.keys(optionsData).length) {
+      options.api = optionsData.api || ''
+      options.noTag = !!optionsData.noTag
+      options.tag = optionsData.tag || 'kindle2flomo'
+      options.split = optionsData.split || ''
+      options.tagPosition = typeof optionsData.tagPosition === 'boolean' ? optionsData.tagPosition : false
+      options.noEmptyLine = typeof optionsData.noEmptyLine === 'boolean' ? optionsData.noEmptyLine : true
+      options.showPosition = typeof optionsData.showPosition === 'boolean' ? optionsData.showPosition : true
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 function setOptions () {
   const _options = JSON.parse(localStorage.getItem('options') || '{}')
@@ -490,7 +514,7 @@ function submit () {
   $emit('submit', options.api)
 }
 function updateOptions () {
-  const { noTag, api, tag, split, tagPosition, noEmptyLine } = options
+  const { noTag, api, tag, split, tagPosition, noEmptyLine, showPosition } = options
   const optionsData = {
     noTag,
     api,
@@ -498,6 +522,7 @@ function updateOptions () {
     split,
     tagPosition,
     noEmptyLine,
+    showPosition,
   }
   localStorage.setItem('options', JSON.stringify(optionsData))
 }
@@ -550,6 +575,13 @@ function listenFile () {
   })
 }
 onMounted(() => {
+  initOptions()
+  store.commit('GET_IMPORT_COUNT')
+  let tag = localStorage.getItem('tag')
+  if (tag) {
+    tag = tag.trim()
+    $emit('update-tag', tag)
+  }
   listenFile()
 })
 </script>
